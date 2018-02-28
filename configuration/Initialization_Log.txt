@@ -147,6 +147,105 @@ Text:
 	
 End tag: CHARACTER
 Text: 
+    
+Comments: 
+Text:  -->
+    
+Start tag: CHARACTER
+Text: 
+        
+Start tag: NAME
+Text: BOSS
+End tag: NAME
+Text:               
+Comments: 
+Text:  -->
+        
+Start tag: EXPLOSION
+Text: 1000
+End tag: EXPLOSION
+Text: 	    
+Comments: 
+Text:  -->
+        
+Start tag: HEALTH
+Text: 2000
+End tag: HEALTH
+Text: 
+        
+Start tag: MESH
+Text: boss.3ds
+End tag: MESH
+Text: 
+        
+Start tag: SHIELD
+Initialization parser error: Token SHIELD not allowed in a CHARACTER group.
+Text: 125
+End tag: SHIELD
+Initialization parser error: SHIELD clossing tag without correspondent opening tag in a CHARACTER
+Text: 
+        
+Start tag: TIMESHIELD
+Initialization parser error: Token TIMESHIELD not allowed in a CHARACTER group.
+Text: 10000
+End tag: TIMESHIELD
+Initialization parser error: TIMESHIELD clossing tag without correspondent opening tag in a CHARACTER
+Text: 
+    
+End tag: CHARACTER
+Text:     
+    
+Comments: 
+Text:  -->
+    
+Start tag: CHARACTER
+Text: 
+        
+Start tag: NAME
+Text: OVERBOSS
+End tag: NAME
+Text:               
+Comments: 
+Text:  -->
+        
+Start tag: EXPLOSION
+Text: 1000
+End tag: EXPLOSION
+Text: 	    
+Comments: 
+Text:  -->
+        
+Start tag: HEALTH
+Text: 2000
+End tag: HEALTH
+Text: 
+        
+Start tag: MESH
+Text: overboss.3ds
+End tag: MESH
+Text: 
+        
+Start tag: SHIELD
+Initialization parser error: Token SHIELD not allowed in a CHARACTER group.
+Text: 250
+End tag: SHIELD
+Initialization parser error: SHIELD clossing tag without correspondent opening tag in a CHARACTER
+Text: 
+        
+Start tag: TIMESHIELD
+Initialization parser error: Token TIMESHIELD not allowed in a CHARACTER group.
+Text: 5000
+End tag: TIMESHIELD
+Initialization parser error: TIMESHIELD clossing tag without correspondent opening tag in a CHARACTER
+Text: 
+        
+Start tag: TEXTURE3D
+Text: overboss.bmp
+End tag: TEXTURE3D
+Text: 
+    
+End tag: CHARACTER
+Text: 
 
     
 Start tag: CHARACTER
@@ -637,6 +736,19 @@ Start tag: COLLIDED
 Text: SUPPLYSHIP
 End tag: COLLIDED
 Text: 
+            
+Comments: 
+Text: V-->
+            
+Start tag: COLLIDED
+Text: BOSS
+End tag: COLLIDED
+Text: 
+            
+Start tag: COLLIDED
+Text: OVERBOSS
+End tag: COLLIDED
+Text: 
         
 End tag: COLLISION
 Text: 
@@ -682,6 +794,19 @@ Text:
             
 Start tag: COLLIDED
 Text: SUPPLYSHIP
+End tag: COLLIDED
+Text: 
+            
+Comments: 
+Text: V-->
+            
+Start tag: COLLIDED
+Text: BOSS
+End tag: COLLIDED
+Text: 
+            
+Start tag: COLLIDED
+Text: OVERBOSS
 End tag: COLLIDED
 Text: 
         
@@ -783,6 +908,89 @@ Start tag: COLLIDED
 Text: SUPPLYSHIP
 End tag: COLLIDED
 Text: 
+            
+Comments: 
+Text: V-->
+            
+Start tag: COLLIDED
+Text: BOSS
+End tag: COLLIDED
+Text: 
+            
+Start tag: COLLIDED
+Text: OVERBOSS
+End tag: COLLIDED
+Text: 
+        
+End tag: COLLISION
+Text: 
+
+        
+Comments: 
+Text: V-->
+        
+Start tag: COLLISION
+Text: 
+            
+Start tag: CHARACTER
+Text: BOSS
+End tag: CHARACTER
+Text: 
+            
+Start tag: COLLIDED
+Text: BRICK
+End tag: COLLIDED
+Text: 
+            
+Start tag: COLLIDED
+Text: BUNKER
+End tag: COLLIDED
+Text: 
+            
+Start tag: COLLIDED
+Text: SHIP
+End tag: COLLIDED
+Text: 
+            
+Start tag: COLLIDED
+Text: SHOOT
+End tag: COLLIDED
+Text: 
+        
+End tag: COLLISION
+Text: 
+
+        
+Comments: 
+Text: V-->
+        
+Start tag: COLLISION
+Text: 
+            
+Start tag: CHARACTER
+Text: OVERBOSS
+End tag: CHARACTER
+Text: 
+            
+Start tag: COLLIDED
+Text: BRICK
+End tag: COLLIDED
+Text: 
+            
+Start tag: COLLIDED
+Text: BUNKER
+End tag: COLLIDED
+Text: 
+            
+Start tag: COLLIDED
+Text: SHIP
+End tag: COLLIDED
+Text: 
+            
+Start tag: COLLIDED
+Text: SHOOT
+End tag: COLLIDED
+Text: 
         
 End tag: COLLISION
 Text: 
@@ -828,6 +1036,19 @@ Text:
             
 Start tag: COLLIDED
 Text: SUPPLYSHIP
+End tag: COLLIDED
+Text: 
+            
+Comments: 
+Text: V-->
+            
+Start tag: COLLIDED
+Text: BOSS
+End tag: COLLIDED
+Text: 
+            
+Start tag: COLLIDED
+Text: OVERBOSS
 End tag: COLLIDED
 Text: 
         
@@ -927,6 +1148,19 @@ Text:
             
 Start tag: COLLIDED
 Text: SUPPLYSHIP
+End tag: COLLIDED
+Text: 
+            
+Comments: 
+Text: V-->
+            
+Start tag: COLLIDED
+Text: BOSS
+End tag: COLLIDED
+Text: 
+            
+Start tag: COLLIDED
+Text: OVERBOSS
 End tag: COLLIDED
 Text: 
         
