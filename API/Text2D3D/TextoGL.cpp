@@ -62,19 +62,23 @@ void cTextoGL::setEscalado(GLfloat x, GLfloat y, GLfloat z){
 	escalado.z = z;
 }
 
-void cTextoGL::text2D_draw(unsigned int x, unsigned int y, char* text, int anchoVentana, int altoVentana, GLfloat *color){
-
-	glPushAttrib(GL_DEPTH_BUFFER_BIT | GL_ENABLE_BIT);
-	glDisable(GL_LIGHTING);
-	glDisable(GL_DEPTH_TEST);
+void cTextoGL::text2D_draw(unsigned int x, unsigned int y, char* text, int anchoVentana, int altoVentana, GLfloat *color)
+{
+	//glPushAttrib(GL_DEPTH_BUFFER_BIT | GL_ENABLE_BIT);
+	//glDisable(GL_LIGHTING);
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+	glEnable(GL_LIGHT1);
+	glEnable(GL_LIGHT2);
+	//glDisable(GL_DEPTH_TEST);
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
 	glLoadIdentity();
 	gluOrtho2D(0, anchoVentana, 0, altoVentana);
-	glMatrixMode(GL_MODELVIEW);
+	//glMatrixMode(GL_MODELVIEW);
 
-	glPushMatrix();
-	glLoadIdentity();
+	//glPushMatrix();
+	//glLoadIdentity();
 	if (color==NULL) {
 		GLfloat red[3]={1.0f, 0.0f, 0.0f};
 		glColor3fv(red);
@@ -85,10 +89,10 @@ void cTextoGL::text2D_draw(unsigned int x, unsigned int y, char* text, int ancho
 		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, *text++);
 
 	glPopMatrix();
-	glMatrixMode(GL_PROJECTION);
-	glPopMatrix();
+	/*glMatrixMode(GL_PROJECTION);
+	glPopMatrix();*/
 	glMatrixMode(GL_MODELVIEW);
-	glPopAttrib();
+	//glPopAttrib();
 }
 
 void cTextoGL::ReceiveMessage(RTDESK_CMsg *pMsg){

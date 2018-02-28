@@ -1,9 +1,10 @@
 /*	Definition of the class Scene
+*	@file Scene.h
 
-	Prefix: CSC_
+*	Prefix: CSC_
 
-	@author Ramon Molla
-	@version 2011-10
+*	@author Ramon Molla
+*	@version 2011-10
 */
 
 #ifndef CSC_SCENE
@@ -18,8 +19,7 @@ public:
 
 	bool Moving;
 	UGK::Vector	Start,		///< For scene rotation
-			Angle,
-			AngleStart;
+		Angle;
 
 	//Methods
 	void Init (void);

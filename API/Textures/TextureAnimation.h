@@ -6,11 +6,11 @@
 #ifndef TEXTUREANIMATION_H
 #define TEXTUREANIMATION_H
 
-#include <HRTimer.h>
-#include "Texture.h"
-
+#include <UGKTexture.h>
 #include <GlobalTiming.h>
 #include <vector>
+
+using namespace UGK; 
 using namespace std;
 
 #define ANI_DEFAULT_INDEXES	-1

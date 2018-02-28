@@ -15,6 +15,8 @@
 #include <UGKAlgebra.h>
 #include <RTDeskEntity.h>
 #include <UGKMesh3D.h>
+#include <CBBPoint.h>
+#include <UGKTexturesManager.h>
 
 #ifndef DEQUE_LOADED 
 #define DEQUE_LOADED 
@@ -25,6 +27,7 @@ using namespace std;
 #define CHAR_HEALTH_INFINITE	CHAR_DEFAULT_INDEXES
 #define CHAR_NO_TEXTURE			CHAR_DEFAULT_INDEXES
 #define CHAR_TEXTUREID			int
+
 /**
 	* Define new types of variable for the 2d and 3d animation
 */
@@ -84,6 +87,18 @@ typedef enum {
 	CHAR_MAX_STATES			///< For management purpouses only. Always at the end of the enumeration
 } CHAR_LIFE_STATES;
 
+/**
+* @enum GCHARS_References
+* It defines the singletons order to reference by any existing character in the game
+*/
+typedef enum
+{
+	CHARS_TEXTURES_MNGR_REF,
+	CHARS_GAME_REF,
+	CHARS_MAX_REFERENCES
+} GCHARS_References;
+
+
 #define CHAR_NO_AABB			-1
 #define CHAR_NO_OBB				-1
 #define CHAR_TYPE_UNKNOWN		-1
@@ -98,6 +113,10 @@ typedef enum {
 //#define CHAR_USE_SPHERE		4
 //#define CHAR_USE_ELLIPSOID	5
 
+#if defined CHAR_USE_QUADTREE
+#include <QuadtreeRoot.h>
+#endif
+
 #define CHAR_2D_AABB_THICKNESS	0.1		 //Characters are not really and completely flat
 #define CHAR_AABB_THICKNESS_DEFAULT	-1.0 //Do not touch the value
 
@@ -106,8 +125,6 @@ typedef enum {
 	* We define new types of variable coordinate ranges
 */
 
-#include <CBBPoint.h>
-
 typedef enum {
 	CHAR_BBMIN,	///<Minimum value of Bounding Box
 	CHAR_BBMAX, ///<Maximum value of Bounding Box
@@ -115,10 +132,6 @@ typedef enum {
 	CHAR_BBSIZE, ///<Value of the length from center to max or min value
 	CHAR_BBMAXCOORDS,
 } CHAR_BBCOORD;
-#endif
-
-#if defined CHAR_USE_QUADTREE
-#include <QuadtreeRoot.h>
 #endif
 
 /**
@@ -276,10 +289,17 @@ namespace UGK
 		inline void SetTimers	(CHAR_TIMER_VECTOR T)	{ if (Timer.size() < T.size()) Timer.resize(T.size()); for (unsigned int i = 0; i < T.size(); i++) Timer[i] = T[i]; }
 		inline void UpdateSF	(HRTM_SF * SF) { for (unsigned int i = 0; i < Timer.size(); i++) Timer[i].SetSF(SF); }
 
-		inline void			SetMeshName(UGKS_String MN)	{ MeshName = MN; }
-		inline UGKS_String	GetMeshName()				{ return MeshName; }
-		inline void			SetMesh(CMesh3d * mesh)		{ Mesh = mesh; }
-
+		inline void			SetMeshName	(UGKS_String MN)	{ MeshName = MN; }
+		inline UGKS_String	GetMeshName	()					{ return MeshName; }
+		inline void			SetMesh		(CMesh3d * mesh)	{ Mesh = mesh; }
+		inline void			SetTexture(CHAR_TEXTUREID TId) { ((CTexturesManager *)Directory[CHARS_TEXTURES_MNGR_REF])->Textures[TId]->SetTexture(); }
+		inline void			SetTexture(CHAR_RENDER_MODE RenderMode)
+		{
+			if (CHAR_2D == RenderMode)
+				 ((CTexturesManager *)Directory[CHARS_TEXTURES_MNGR_REF])->Textures[IndTexture2D]->SetTexture(); 
+			else ((CTexturesManager *)Directory[CHARS_TEXTURES_MNGR_REF])->Textures[IndTexture3D]->SetTexture();
+		}
+		
 		/**
 		@fn virtual void SetLocalTimers();
 		*	Creates the local timers the object requires
@@ -288,9 +308,9 @@ namespace UGK
 		void		 ChangeSF(HRTM_SF *SF);		///< Changes the sampling frequency (S.F.) of all the timers used by the character. All the timers have the same S.F.
 		inline void  SetSounds		(CHAR_SOUND_VECTOR sound)				{ Sound = sound; }
 
-		inline void		SetSound		(CSound * sound, unsigned int Index)	{ Sound[Index] = sound; }
+		inline void		SetSound		(CSound * sound, unsigned int Index){ Sound[Index] = sound; }
 		inline CSound * GetSound	(unsigned int Index)					{ return Sound[Index]; }
-		inline void		SetSoundsAmount	(unsigned int Amount)					{ Sound.resize(Amount); }
+		inline void		SetSoundsAmount	(unsigned int Amount)				{ Sound.resize(Amount); }
 
 		///AI
 		inline void OutEvent(STT_EventType Event) { AI->outEvent(Event, NULL, this); }
@@ -311,29 +331,41 @@ namespace UGK
 		inline CPhyObject * GetPhysicalObject(void) { return Physical; }
 
 		///Recalculates the min and max values of the absolute coordinates of the bounding box
+		void ResetAABBInGlobalCoord	();
 		void SetAABBInGlobalCoord	();
-		void SetAABBInGlobalCoord(UGKALG_NUMERIC_TYPE x, UGKALG_NUMERIC_TYPE y, UGKALG_NUMERIC_TYPE z);
-		void SetAABBInGlobalCoord(UGK::SpaceCoords Coord);
+		void SetAABBInGlobalCoord	(UGKALG_NUMERIC_TYPE x, UGKALG_NUMERIC_TYPE y, UGKALG_NUMERIC_TYPE z);
+		void SetAABBInGlobalCoord	(UGK::SpaceCoords Coord);
+		void SetAABBInGlobalCoord	(CMesh3d *model);
+
 		///Recalculates the min and max values of the absolute coordinates of the bounding box and inserts the character into the the collision detector
+		void ResetAABB		();
 		void InitializeAABB	(void);
+		void UpdateAABB		();
+		inline void UpdateAABB(UGKALG_NUMERIC_TYPE x, UGKALG_NUMERIC_TYPE y, UGKALG_NUMERIC_TYPE z)
+		{
+			SetAABBSize	(x, y, z);
+			UpdateAABB	();
+		}
+		inline void SetAABBSize(UGKALG_NUMERIC_TYPE x, UGKALG_NUMERIC_TYPE y, UGKALG_NUMERIC_TYPE z)
+		{
+			CharAABB.AABB[CHAR_BBSIZE][XDIM].Value = x;
+			CharAABB.AABB[CHAR_BBSIZE][YDIM].Value = y;
+			CharAABB.AABB[CHAR_BBSIZE][ZDIM].Value = z;
+		}
 		///Recalculates the min and max values of the absolute coordinates of the bounding box and updates the character in the the collision detector
 		void UpdateAABBInColDetect		(void);
 		void UpdateAABBInColDetect		(UGK::SpaceCoords Coord);	///< The same only on a given coord
-		void UpdateAABBInColDetect		(UGKALG_NUMERIC_TYPE x, UGKALG_NUMERIC_TYPE y, UGKALG_NUMERIC_TYPE z);
+		void UpdateAABBInColDetect		(UGKALG_NUMERIC_TYPE x, UGKALG_NUMERIC_TYPE y, UGKALG_NUMERIC_TYPE z);		
 
-		void SetAABBInGlobalCoord	(CMesh3d *model);
-		
-		void UpdateAABB();
-
-		bool CollidedAABB	(CCharacter * Character);
+		bool CollidedAABB		(CCharacter * Character);
 		/**Executed when the collision detection system detects a collison with this object although 
 		   this object may not be calculating any collision. Every object has to rewrite it in order to perform its proper treatment*/
-		virtual void Collided (CCharacter *CollidedChar);
+		virtual void Collided	(CCharacter *CollidedChar);
 
 		void	FitMeshIntoBoundingBox		();
-		void	FitMeshIntoBoundingBox(CMesh3d *model);
+		void	FitMeshIntoBoundingBox		(CMesh3d *model);
 		void	FitBoundingBoxArroundMesh	();
-		void	FitBoundingBoxArroundMesh(CMesh3d *model);
+		void	FitBoundingBoxArroundMesh	(CMesh3d *model);
 
 		///Removes or insert the object into the collision detection structrues
 		void Collisionable(bool Mode)
@@ -349,10 +381,10 @@ namespace UGK
 
 		inline bool	UpdateCollisionDetection()
 		{
-#ifdef CHAR_USE_QUADTREE
+		#ifdef CHAR_USE_QUADTREE
 			return QTRoot->UpdateCharacter(this);
-#elif defined CHAR_USE_SWEEP_AND_PRUNE
-#endif
+		#elif defined CHAR_USE_SWEEP_AND_PRUNE
+		#endif
 		}
 
 		inline CharacterList GetNearestObjectsTo(float Radius)
@@ -372,6 +404,7 @@ namespace UGK
 		void Render2D();
 
 		//Transformation methods
+		inline void Move() { MoveTo(Position); }
 		///Moving by default depending on the miliseconds passed by
 		void		 Move		(UGKALG_NUMERIC_TYPE ms);
 		///Moves to the absolute coordinate x,y,z
@@ -388,10 +421,10 @@ namespace UGK
 		virtual void MoveRelTo	(Vector &Move);
 
 		void Transform(void);
-		void ResetTranslation		()	{ Position.v.x = 0.0; Position.v.y = 0.0; Position.v.z = 0.0; }
-		void ResetRotation			()	{ Rotation.v.x = 0.0; Rotation.v.y = 0.0; Rotation.v.z = 0.0; }
-		void ResetScale				()	{ Scale.v.x = 1.0; Scale.v.y = 1.0; Scale.v.z = 1.0; }
-		void ResetTransformations	()	{ ResetScale(); ResetRotation(); ResetTranslation(); }
+		inline void ResetTranslation()		{ Position.Reset(); }
+		inline void ResetRotation()			{ Rotation.Reset(); }
+		inline void ResetScale()			{ Scale.Set(1.0f, 1.0f, 1.0f);	}
+		inline void ResetTransformations()	{ ResetScale(); ResetRotation(); ResetTranslation(); }
 
 		//RTDesk virtual Function redefinition
 		void ReceiveMessage(RTDESK_CMsg *pMsg);

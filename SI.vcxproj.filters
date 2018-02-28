@@ -82,6 +82,12 @@
     <Filter Include="Source Files\Space Invaders\Global">
       <UniqueIdentifier>{61f2669d-f0d6-4cca-81b1-181d41d58e3f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Configuration">
+      <UniqueIdentifier>{a46b2c16-9dc0-442c-8a56-f5aaa5f3c065}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Levels">
+      <UniqueIdentifier>{0d3e4ea3-6a95-4e28-b0d5-2a5a17a5d60d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -105,16 +111,10 @@
     <ClInclude Include="API\Text2D3D\TextoGL.h">
       <Filter>Header Files\API\Txt2D3D</Filter>
     </ClInclude>
-    <ClInclude Include="API\Textures\Texture.h">
-      <Filter>Header Files\API\Textures</Filter>
-    </ClInclude>
     <ClInclude Include="API\Textures\TextureAnimation.h">
       <Filter>Header Files\API\Textures</Filter>
     </ClInclude>
     <ClInclude Include="API\Textures\TextureAnimationManager.h">
-      <Filter>Header Files\API\Textures</Filter>
-    </ClInclude>
-    <ClInclude Include="API\Textures\TexturesManager.h">
       <Filter>Header Files\API\Textures</Filter>
     </ClInclude>
     <ClInclude Include="API\Application.h">
@@ -243,11 +243,17 @@
     <ClInclude Include="include\SISceneGraph.h">
       <Filter>Header Files\Space Invaders\Managers</Filter>
     </ClInclude>
-    <ClInclude Include="include\Boss.h">
+    <ClInclude Include="include\Background.h">
       <Filter>Header Files\Space Invaders\Characters</Filter>
     </ClInclude>
-    <ClInclude Include="include\Overboss.h">
-      <Filter>Header Files\Space Invaders\Characters</Filter>
+    <ClInclude Include="include\GUIGadget.h">
+      <Filter>Header Files\API</Filter>
+    </ClInclude>
+    <ClInclude Include="API\Particles\Particle.h">
+      <Filter>Header Files\API\Particles</Filter>
+    </ClInclude>
+    <ClInclude Include="API\Particles\ParticleSystem.h">
+      <Filter>Header Files\API\Particles</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -269,16 +275,10 @@
     <ClCompile Include="API\Text2D3D\TextoGL.cpp">
       <Filter>Source Files\API\Txt2D3D</Filter>
     </ClCompile>
-    <ClCompile Include="API\Textures\Texture.cpp">
-      <Filter>Source Files\API\Textures</Filter>
-    </ClCompile>
     <ClCompile Include="API\Textures\TextureAnimation.cpp">
       <Filter>Source Files\API\Textures</Filter>
     </ClCompile>
     <ClCompile Include="API\Textures\TextureAnimationManager.cpp">
-      <Filter>Source Files\API\Textures</Filter>
-    </ClCompile>
-    <ClCompile Include="API\Textures\TexturesManager.cpp">
       <Filter>Source Files\API\Textures</Filter>
     </ClCompile>
     <ClCompile Include="API\Application.cpp">
@@ -404,6 +404,18 @@
     <ClCompile Include="src\SISceneGraph.cpp">
       <Filter>Source Files\Space Invaders\Managers</Filter>
     </ClCompile>
+    <ClCompile Include="src\Background.cpp">
+      <Filter>Source Files\Space Invaders\Characters</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GUIGadget.cpp">
+      <Filter>Source Files\API</Filter>
+    </ClCompile>
+    <ClCompile Include="API\Particles\Particle.cpp">
+      <Filter>Source Files\API\Particles</Filter>
+    </ClCompile>
+    <ClCompile Include="API\Particles\ParticleSystem.cpp">
+      <Filter>Source Files\API\Particles</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -422,6 +434,36 @@
     </None>
     <None Include="ClassDiagram.cd" />
     <None Include="ClassDiagram1.cd" />
+    <None Include="configuration\Devices.html">
+      <Filter>Resource Files\Configuration</Filter>
+    </None>
+    <None Include="configuration\Initialization.html">
+      <Filter>Resource Files\Configuration</Filter>
+    </None>
+    <None Include="configuration\Keyboard.html">
+      <Filter>Resource Files\Configuration</Filter>
+    </None>
+    <None Include="Levels\Level_0.html">
+      <Filter>Resource Files\Levels</Filter>
+    </None>
+    <None Include="Levels\Level_1.html">
+      <Filter>Resource Files\Levels</Filter>
+    </None>
+    <None Include="Levels\Level_2.html">
+      <Filter>Resource Files\Levels</Filter>
+    </None>
+    <None Include="Levels\Level_3.html">
+      <Filter>Resource Files\Levels</Filter>
+    </None>
+    <None Include="Levels\Level_4.html">
+      <Filter>Resource Files\Levels</Filter>
+    </None>
+    <None Include="Levels\Level_5.html">
+      <Filter>Resource Files\Levels</Filter>
+    </None>
+    <None Include="Levels\Level_6.html">
+      <Filter>Resource Files\Levels</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="SI.rc">

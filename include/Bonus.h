@@ -15,15 +15,14 @@
 
 #define CBN_WIDTH_2D  0.8f
 #define CBN_HEIGTH_2D 0.8f
-#define CBN_LENGTH_2D 0.0f
+#define CBN_LENGTH_2D 0.5f
 
 #define CBN_WIDTH_3D  3.0f
 #define CBN_HEIGTH_3D 1.0f
 #define CBN_LENGTH_3D 0.0f
 
 #define CBN_YPOS 0.05f
-#define CBN_ZPOS SIGLBD_DEFAULT_Z_POSITION
-
+#define CBN_ZPOS SIGLBD_DEFAULT_Z_POSITION+0.01f
 #define CBN_MAX_ALPHA 0.9f
 #define CBN_FADING_SPEED 0.0005f
 
@@ -72,12 +71,8 @@ class CBonus: public CExplosiveChar
 	//Atributes
 public:
 	float			Shake1, Shake2;	///<The scene is shaking
-
-	CCharacter*		Game;			///< Reference to the Game singleton
-
-	float		Alpha,			///< For waving the vanishment of the bonus while falling downwards to the player
-				FadingSpeed,	///< Velocity of Fading in and out the alpha channel of the texture for the bonus
-				Bottom;			///< Lowest mark to signal the bouns has gone out of game
+	float			Alpha,			///< For waving the vanishment of the bonus while falling downwards to the player
+					FadingSpeed;	///< Velocity of Fading in and out the alpha channel of the texture for the bonus
 
 	//Timing
 	double		msUpdMsg;

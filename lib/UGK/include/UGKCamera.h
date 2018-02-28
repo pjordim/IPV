@@ -13,7 +13,6 @@
 #define UGKCC_CAMERA //Defines camera macro
 #include<iostream>
 #include <UGKSceneGraph.h>
-#include <UGKCharacter.h>
 #include <UGKLog.h>
 #include <QuadtreeRoot.h>
 #include <glut.h>

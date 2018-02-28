@@ -65,7 +65,7 @@ void CShip::Init()
 	Speed.v[XDIM]		=	0.015f;	//Units/ms
 
 #ifdef CHAR_USE_AABB
-	SetAABBInGlobalCoord(CS_XSIZE, CS_YSIZE, CS_ZSIZE);
+	UpdateAABB(CS_XSIZE, CS_YSIZE, CS_ZSIZE);
 #endif
 
 	zi					=	0.0f;
@@ -78,7 +78,7 @@ void CShip::Init()
 
 	UpdateSF(TimerManager.GetSF());
 
-	MoveTo(0.0, 0.0, 0.0);
+	Position.Set(0.0, 0.0, 0.0);
 }
 
 void CShip::UpdateRadius()
@@ -335,9 +335,6 @@ void CShip::Render ()
 		glFrontFace(GL_CCW);		// The faces are defined counter clock wise
 		glEnable(GL_DEPTH_TEST);	// Occlusion culling set on
 	
-		if (Navy->Antialiasing) // Anti-aliasing
-			glEnable(GL_MULTISAMPLE_ARB);
-
 		// The ship 'floats'
 		zi += zi_speed * Timer[CS_UPD_PERIOD].GetAlarmPeriodms() / 15;
 
@@ -366,9 +363,6 @@ void CShip::Render ()
 			glColor4f(Color3D.r, Color3D.g, Color3D.b, Color3D.a);
 
 		Render3D();
-
-		if (Navy->Antialiasing) // Anti-aliasing
-			glDisable(GL_MULTISAMPLE_ARB);
 
 		break;
 	default: return;

@@ -1,5 +1,6 @@
 /**
 *	Defines the class of a boometer control that draws a level of some magnitude
+*	@file Boometer.h
 
 *	@author 
 *	@version 2014-01
@@ -7,12 +8,12 @@
 
 #ifndef BOOMETER_H
 #define BOOMETER_H
-#include <UGKCharacter.h>
-#include <TexturesManager.h>
+#include <GUIGadget.h>
+#include <UGKTexturesManager.h>
 
 using namespace UGK;
 
-class CBoometer: public CCharacter
+class CBoometer: public CGUIGadget
  {
  public:
 	 ///Constructor of the class

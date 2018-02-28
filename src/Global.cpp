@@ -8,14 +8,17 @@
 */
 
 #define WIN32_LEAN_AND_MEAN				// Compile faster (excludes automatic processing of some rarely-used headers)
-#include "Global.h"						// Header File For General Parameters of the Game
+#include <Global.h>						// Header File For General Parameters of the Game
 
 #include <Navy.h>			// Header File class Navy-> Ships and supply ships that fight in the enemy navy
 #include <Player.h>
+#include <UGKCameraManager.h>
 
 #ifndef CDS_FULLSCREEN					// CDS_FULLSCREEN Is Not Defined By Some
 #define CDS_FULLSCREEN 4				// Compilers. By Defining It This Way,
 #endif									// We Can Avoid Errors
+
+using namespace UGK;
 
 CSITimeAcc TimerManager;
 
@@ -32,7 +35,7 @@ CMeshesManager				MeshesManager;
 CScoresManager				ScoresManager;
 CSoundsManager				SoundsManager;
 CTexturesManager			TexturesManager;
-UGKCCameraManager			CameraManager;
+CCameraManager				CameraManager;
 SISceneGraph				SceneGraph;
 
 ///Amount of players simultaneously available when playing
@@ -53,7 +56,7 @@ CNavy			*Navy;			///<Singleton to save the general configuration of the enemy Na
 CGUI			GUI;			///<Manages all the windows, msgs,... for the player
 CCamera			*Camera;		///<Singleton declaration of the game camera
 CScene			Scene;			///<Singleton to manage the Scene
-CCharacter		Background;		
+CBackground		Background;
 CSICharactersFactory	*CharacterFactory;			///<Singleton declaration of the character factory that creates as many given characters as demanded
 
 //RT-DESK

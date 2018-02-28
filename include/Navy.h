@@ -93,8 +93,7 @@ public:
 	///Ships health by default
 	int				ShipDefaultHealth;
 
-	bool			ReGenShips,		///<Resurrect ships
-					Antialiasing;	///< Warn the navy to draw all ships meshes using antialiasing
+	bool			ReGenShips;
 
 	CSound DescendingSound;
 

@@ -46,8 +46,8 @@
 	#elif defined (UGKALG_DOUBLE)
 		#define UGKALG_NUMERIC_TYPE double
 		#define UGKALG_MAX_VALUE DBL_MAX
-		#define UGKALG_ONE			1.0f
-		#define UGKALG_ZERO			0.0f
+		#define UGKALG_ONE			1.0
+		#define UGKALG_ZERO			0.0
 	#elif defined (UGKALG_FIXED_POINT)
 		#include <UGKFPA64b.h>
 		#define UGKALG_NUMERIC_TYPE UGKFPA64b
@@ -291,7 +291,7 @@ union UGKALG_SimpleVector {
 	UGKALG_SimpleVector() { x = y = z = w = 0.0; }
 	UGKALG_SimpleVector(v4 v1) { v = v1; }
 	UGKALG_SimpleVector(UGKALG_NUMERIC_TYPE x1, UGKALG_NUMERIC_TYPE y1, UGKALG_NUMERIC_TYPE z1) { x = x1; y = y1; z = z1; }
-	v4 operator * (UGKALG_NUMERIC_TYPE a) { return v*a; }
+	UGKALG_SimpleVector operator * (UGKALG_NUMERIC_TYPE a) { return v*a; }
 	void operator *= (UGKALG_NUMERIC_TYPE a) { v*=a; }
 	void operator *= (UGKALG_SimpleVector a) { v *= a.v; }
 	void operator -= (UGKALG_SimpleVector a) { v -= a.v; }

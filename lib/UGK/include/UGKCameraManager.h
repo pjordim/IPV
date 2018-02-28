@@ -17,11 +17,11 @@
 
 namespace UGK
 {
-	class UGKCCameraManager : public CCharacter
+	class CCameraManager : public CCharacter
 	{
 	public:
 		//Constructor of the class
-		UGKCCameraManager() {};
+		CCameraManager() {};
 
 		int InitWindow(int argc, char **argv, int w, int h, int postX, int postY, const char* name); ///<Build new Window
 

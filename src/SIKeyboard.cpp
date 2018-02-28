@@ -78,14 +78,14 @@ float	CSIK_ActionsDelay	[CSIK_MAX_KBD_ACTION] = {
 	200,	//CSIK_PLAYER_INMORTAL		Player passes from mortal mode to inmortal mode and viceversa
 	50,		//CSIK_PLAYER_MOVE_RIGHT	Player ship is move rightwards
 	50,		//CSIK_PLAYER_MOVE_LEFT		Player ship is move leftwards
-	500,	//CSIK_PLAYER_SHOOT			Laser fire. ms between two consecutive shoots
+	200,	//CSIK_PLAYER_SHOOT			Laser fire. ms between two consecutive shoots
 	100,	//CSIK_PLAYER_LASERS
 
 	0,		//CSIK_CAMERA_INC_FOV	
 	0,		//CSIK_CAMERA_DEC_FOV,
 	0,		//CSIK_CAMERA_RESHAPE
-	500,	//CSIK_CAMERA_ZOOM_IN
-	500,	//CSIK_CAMERA_ZOOM_OUT
+	300,	//CSIK_CAMERA_ZOOM_IN
+	300,	//CSIK_CAMERA_ZOOM_OUT
 
 	200,	//CSIK_TIMER				For monitoring purpouses
 	300,	//CSIK_CONSOLE
@@ -247,7 +247,7 @@ void CSIKeyboard::ExecuteAction(const CK_ACTION Action, bool On)	///<Release a n
 				RTDESK_Engine->SynchSim2RealTime(0.0);
 			}
 			for(unsigned int i=0; i<CBN_MAX_BONUSES; i++)
-				BonusManager->Bonus[i].SetDefault();
+				BonusManager->Bonus[i]->SetDefault();
 
 			ShootsManager->ReleaseAllShoots();
 				

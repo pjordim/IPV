@@ -11,7 +11,7 @@
 #include <SupplyShip.h>
 
 #include <Navy.h>
-#include <TexturesManager.h>
+#include <UGKTexturesManager.h>
 #include <GlobalTiming.h>
 #include <GameCharacters.h>
 #include <SISceneGraph.h>	
@@ -61,9 +61,7 @@ void CNavy::Init(void)
 	///Global dimensions of the navy playground.
 	///When any ship of the navy reaches left or right BB limit, the navy has to change direction
 	///When any ship of the navy reaches the bottom of the AABB, the game is finished
-	CharAABB.AABB[CHAR_BBSIZE][XDIM].Value = CN_INITIAL_WIDTH_POS;
-	CharAABB.AABB[CHAR_BBSIZE][YDIM].Value = CN_INITIAL_HEIGHT_POS;
-	SetAABBInGlobalCoord();
+	UpdateAABB(CN_INITIAL_WIDTH_POS, CN_INITIAL_HEIGHT_POS, 0.0f);
 #endif
 
 	msg = new cMsgNavy;
@@ -127,7 +125,7 @@ void CNavy::SetMeshes(CMeshesManager* MeshesManager)
 			indexMesh = C->IndMesh;
 			if (indexMesh != CM3D_NO_MESH) {
 				C->Mesh = MeshesManager->GetMesh(indexMesh);
-				if (C->IndTexture3D != CTM_NO_TEXTURE) C->Mesh->modelo.Materials->tex.texture[0] = TextMngr->Textures[C->IndTexture3D]->Texture.gl_id;
+				if (C->IndTexture3D != UGKCTM_NO_TEXTURE) C->Mesh->modelo.Materials->tex.texture[0] = TextMngr->Textures[C->IndTexture3D]->Texture.gl_id;
 			}
 		}//Switch
 	}//For

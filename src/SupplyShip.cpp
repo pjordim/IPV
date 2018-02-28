@@ -77,8 +77,9 @@ void CSupplyShip::Init()
 	Explosion.Health	=	CS_MAX_EXPLOSION_LIFE;
 
 #ifdef CHAR_USE_AABB
-	SetAABBInGlobalCoord(CSS_WIDTH, CSS_HEIGHT, 0.0f);
+	UpdateAABB(CSS_WIDTH, CSS_HEIGHT, 0.0f);
 #endif
+	ResetTransformations();
 }
 
 CSupplyShip::CSupplyShip()
@@ -262,9 +263,6 @@ void CSupplyShip::Render()
 		glFrontFace(GL_CCW);		// The faces are defined counter clock wise
 		glEnable(GL_DEPTH_TEST);	// Occlusion culling set on
 
-		if (Navy->Antialiasing) // Anti-aliasing
-			glEnable(GL_MULTISAMPLE_ARB);
-
 		glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
 		Mesh->modelo.pos.v	 = Position.v;
 		Mesh->modelo.rot.v	 = Rotation.v;
@@ -279,9 +277,6 @@ void CSupplyShip::Render()
 		// SupplyShip normal
 		Mesh->modelo.Draw();
 
-		if (Navy->Antialiasing) // Anti-aliasing
-			glDisable(GL_MULTISAMPLE_ARB);
-		
 		break;
 	default: return;
 	}

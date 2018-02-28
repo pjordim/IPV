@@ -16,6 +16,7 @@
 #include <GlobalDefs.h>
 #include <GlobalTiming.h>
 
+#include <UGKCharactersPool.h>
 #include <SICharactersFactory.h>
 #include <QuadtreeRoot.h>
 
@@ -674,11 +675,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		/// Scene rotation
 		if (Scene.Moving)
 		{
-			Scene.Angle.v[XDIM] += (LOWORD(lParam) - Scene.Start.v[XDIM]) / 2;			// souris axe x (/2 pour diminuer la vitesse)
-			Scene.Angle.v[YDIM] += (HIWORD(lParam) - Scene.Start.v[YDIM]) / 2;			// souris axe y (/2 pour diminuer la vitesse)
+			Scene.Angle.v[XDIM] += (HIWORD(lParam) - Scene.Start.v[XDIM]) / 2;			// souris axe x (/2 pour diminuer la vitesse)
+			Scene.Angle.v[YDIM] += (LOWORD(lParam) - Scene.Start.v[YDIM]) / 2;			// souris axe y (/2 pour diminuer la vitesse)
 		
-		Scene.Start.v[XDIM] = LOWORD(lParam);					// mouse x
-		Scene.Start.v[YDIM] = HIWORD(lParam);					// mouse y
+			Scene.Start.v[XDIM] = HIWORD(lParam);					// mouse x
+			Scene.Start.v[YDIM] = LOWORD(lParam);					// mouse y
 		}
 		break;
 

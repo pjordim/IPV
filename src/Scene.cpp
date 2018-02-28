@@ -8,10 +8,11 @@
 
 #include "Scene.h"
 
+using namespace UGK;
 
 void CScene::Init()
 {
-	Angle.v[UGK::XDIM]	= Angle.v[UGK::YDIM] = AngleStart.v[UGK::XDIM] = 0;
+	Angle.v[XDIM]	= Angle.v[YDIM] = 0.0;
 }
 
 CScene::~CScene()

@@ -44,7 +44,7 @@
 			inline void Init		()					{ RootNode.clear(); currentCharacter = UGKSGUGK_NO_CHARACTER; }
 			inline void SetPool		(CCharactersPool* P){ Pool = P; }
 
-			inline void AddCharacter(CCharacter* Char)	{RootNode.push_back(Char);};
+			inline void AddCharacter(CCharacter* Char)	{if (NULL != Char) RootNode.push_back(Char);};
 			bool RemoveCharacter	(CCharacter* Char);
 			void Render();
 			void Update();

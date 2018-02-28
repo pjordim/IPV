@@ -23,7 +23,7 @@
 #include <UGKMeshManager.h>
 #include <ScoreManager.h>
 #include <ShootsManager.h>	/// Header File class Manager for the shoots
-#include <TexturesManager.h>/// Header File class Manager for the Textures.
+#include <UGKTexturesManager.h>/// Header File class Manager for the Textures.
 #include <TextureAnimationManager.h>
 #include <SICharactersFactory.h>
 
@@ -44,12 +44,12 @@
 
 #include <SIGame.h>
 #include <GUI.h>
-#include <TextoGL.h>
 #include <UGKLog.h>
 #include <UGKglError.h>
 #include <Scene.h>
 
 #include <GameSounds.h>
+#include <Background.h>
 #include <NetWork.h>
 #include <TextResources.h>
 #include <SITexturesResources.h>
@@ -85,7 +85,7 @@ extern CGUI				GUI;			///<Singleton declaration to render the general configurat
 extern CSIKeyboard		SIKeyboard;		///<Singleton to manage the application keyboard
 extern CGraphicCard		GraphicsCard;	///<Singleton to manage the application Graphics Card
 
-extern CCharacter		Background;
+extern CBackground		Background;
 extern CPlayer			*defaultPlayer;
 
 extern CMsgFactory		MsgFactory;
@@ -290,15 +290,6 @@ extern UGKS_String CGS_SoundsFiles[CGS_MAX_SND];
 
 //Other local variables only for this file
 Vector control_points[6];
-
-cTextoGL txtFPS, txtRND, txtUPD, txtIDL, txtSUM, txtCP, txtRTDSKMM;
-
-//2D Texts Colors
-GLfloat red[3]={1.0f, 0.0f, 0.0f};
-GLfloat gren[3]={0.0f, 1.0f, 0.0f};
-GLfloat yelow[3]={1.0f, 1.0f, 0.0f};
-GLfloat blue[3]={0.0f, 0.0f, 1.0f};
-char texto[50];
 
 CSIGame::CSIGame()
 {
@@ -551,7 +542,7 @@ void CSIGame::LoadGame (UGKS_String  filename, UGKS_String  folder)
 
 	HTMLReader.ParseFile(filename, folder, &LevelReader);
 	
-	/*UGKS_String msg1 = "Poner aquí el resultado de la actualización de los contenidos del objeot creado por los alumnos. ";
+	/*UGKS_String msg1 = "Poner aquí el resultado de la actualización de los contenidos del objeto creado por los alumnos. ";
 	
 	msg1 = msg1 + "\nSe puede insertar caracteres de retorno de carro para cada aspecto a presentar.";
 	CString msg = UGKS_string2CString(msg1);
@@ -559,6 +550,7 @@ void CSIGame::LoadGame (UGKS_String  filename, UGKS_String  folder)
 	MessageBox(NULL, msg, L"Resultado", MB_OK);
 	*/
 	Navy->SetShipsAttributes();
+	SceneGraph.AddCharacter(CharacterPool->get(CHARS_BACKGROUND, UGKOBJM_NO_SUBTYPE));
 }
 
 void CSIGame::StartCameraMov()
@@ -649,14 +641,6 @@ void CSIGame::AI_Init(SIAI_AI_TYPE Type)
 
 void CSIGame::Render(void)
 {
-	//Amount of pixels from the right margin to wirte real time information
-	#define TEXT_X_POS (initialWidthW-150)
-	#define TEXT_Y_POS 50
-	//Amount of pixels to increment for every line written
-	#define TEXT_Y_INC 25
-
-	unsigned int posX, posY;
-
 	switch(RenderMode)
 	{
 	case CHAR_NO_RENDER:
@@ -689,12 +673,15 @@ void CSIGame::Render(void)
 		glRotatef(intermede_angle_total, -0.3f, 0.55f, 1.0f);			// rotation de l'intermède -.3 .5 1.0
 
 		// CAMERA -> modification utilisateur (clic et déplacement de la souris)
-		glRotatef(Scene.Angle.v[YDIM], 1.0, 0.0, 0.0);								// rotation utilisateur (par rapport à l'axe des x)
-		glRotatef(Scene.Angle.v[XDIM], 0.0, 1.0, 0.0);								// rotation utilisateur (par rapport à l'axe des y)
+		glRotatef(Scene.Angle.v[XDIM], 1.0, 0.0, 0.0);								// rotation utilisateur (par rapport à l'axe des x)
+		glRotatef(Scene.Angle.v[YDIM], 0.0, 1.0, 0.0);								// rotation utilisateur (par rapport à l'axe des y)
+
+		if (Antialiasing)
+			glEnable(GL_MULTISAMPLE_ARB);
 
 		// Background	
-		//GUI.display_background(false);										
-
+		Background.Render(CBG_DONT_ROTATE);
+		
 		//********************************** Start Render with Blending *************************
 		glEnable(GL_BLEND);										
 
@@ -705,7 +692,7 @@ void CSIGame::Render(void)
 		//Bonus
 		BonusManager->Render();
 
-		if (CSIG_PASSING_2_3D == AI->GetState()) GUI.display_ring_2d_to_3d();
+		if (CSIG_PASSING_2_3D == AI->GetState()) GUI.DisplayRing2D23D();
 
 		//********************************** Finish Render with Blending *************************
 		
@@ -731,39 +718,8 @@ void CSIGame::Render(void)
 		//Measures calculation
 		TimerManager.calcFpsPct();
 
-		// Display Player Health
-		GUI.display_Health();
-		// Number of lives
-		GUI.display_below_lives();
-		// Score, Hiscore, Lives
-		GUI.display_score_hiscore_lives();
-
-		posX = TEXT_X_POS;
-		posY = TEXT_Y_POS;
-		sprintf(texto, "FPS %.2f", TimerManager.fps);
-		txtFPS.text2D_draw(posX, posY, texto, initialWidthW, initialHeightW, yelow);
-		posY += TEXT_Y_INC;
-		sprintf(texto, "Rnd %.2f%%", TimerManager.pct[SIGLBT_RENDER_TIMING]);
-		txtRND.text2D_draw(posX, posY, texto, initialWidthW, initialHeightW, yelow);
-		posY += TEXT_Y_INC;
-		sprintf(texto, "Upd %.2f%%", TimerManager.pct[SIGLBT_UPDATE_TIMING]);
-		txtUPD.text2D_draw(posX, posY, texto, initialWidthW, initialHeightW, yelow);
-		posY += TEXT_Y_INC;
-		sprintf(texto, "Idl %.2f%%", TimerManager.pct[SIGLBT_IDLE_TIMING]);
-		txtIDL.text2D_draw(posX, posY, texto, initialWidthW, initialHeightW, yelow);
+		GUI.Render();
 		
-		//Draw Info Texts
-		if(DiscreteSimulation)
-		{	
-			posY += TEXT_Y_INC;
-			sprintf(texto, "Rtdsk %.2f%%", TimerManager.pct[SIGLBT_RTDESK_TIMING]);
-			txtIDL.text2D_draw(posX, posY, texto, initialWidthW, initialHeightW, yelow);
-		}
-
-		posY += TEXT_Y_INC;
-		sprintf(texto, "Suma %% %.2f", TimerManager.pctSuma);
-		txtSUM.text2D_draw(posX, posY, texto, initialWidthW, initialHeightW, yelow);
-
 		Application.Window.Refresh();
 		break;
 	}
@@ -804,7 +760,6 @@ void CSIGame::ChangeRenderMode(CHAR_RENDER_MODE Mode)
 	for(i=0;i<Players.size();i++)	Players[i]->ChangeRenderMode(RenderMode);
 
 	//Bonus
-	BonusManager->ChangeRenderMode(RenderMode);
 	BonusManager->ChangeRenderMode(RenderMode);
 
 	//Bunkers
@@ -954,8 +909,7 @@ DWORD WINAPI CSIG_ClearManagers(LPVOID lpParam)
 	//Initialize bonus managers
 	BonusManager->EndByFrame	= Game->EndByFrame;
 	BonusManager->EndByTime		= Game->EndByTime;
-	BonusManager->Bottom		= SIGLBD_PG_BOTTOM;
-	BonusManager->Ceiling		= SIGLBD_PG_CEILING;
+
 	BonusManager->UpdateSF(TimerManager.GetSF());
 	BonusManager->Timer[CBN_RND_PERIOD].SetAlarm(Game->DefaultRndPeriod[CHARS_BONUS_MNGR]);
 	BonusManager->Timer[CBN_UPD_PERIOD].SetAlarm(Game->DefaultUpdPeriod[CHARS_BONUS_MNGR]);
@@ -1154,11 +1108,11 @@ void CSIGame::AssignSounds2Objects()
 
 		for (l = 0; l < CPL_MAX_LASERS; l++)
 		{
-			Players[i]->Laser[l].SetSoundsAmount(CPL_MAX_SND);
-			Players[i]->Laser[l].SetSound(SoundsManager.GetSound(CGS_EXPLOSION_SND), CPL_EXPLOSION_SND);
-			Players[i]->Laser[l].SetSound(SoundsManager.GetSound(CGS_SHOOT_SND), CPL_SHOOT_SND);
-			Players[i]->Laser[l].SetSound(SoundsManager.GetSound(CGS_SHOOT3D_SND), CPL_SHOOT3D_SND);
-			Players[i]->Laser[l].SetSound(SoundsManager.GetSound(CGS_TOUCH_SND), CPL_TOUCH_SND);
+			Players[i]->Laser[l]->SetSoundsAmount(CPL_MAX_SND);
+			Players[i]->Laser[l]->SetSound(SoundsManager.GetSound(CGS_EXPLOSION_SND), CPL_EXPLOSION_SND);
+			Players[i]->Laser[l]->SetSound(SoundsManager.GetSound(CGS_SHOOT_SND), CPL_SHOOT_SND);
+			Players[i]->Laser[l]->SetSound(SoundsManager.GetSound(CGS_SHOOT3D_SND), CPL_SHOOT3D_SND);
+			Players[i]->Laser[l]->SetSound(SoundsManager.GetSound(CGS_TOUCH_SND), CPL_TOUCH_SND);
 		}
 	}
 
@@ -1267,9 +1221,8 @@ bool CSIGame::Initialize (void)
 	if (NULL == dwThreadId)
 		CSIG_InitSounds(NULL);	//Do it blocking. HW does not allow threads
 
-	Navy->Antialiasing	= Application.Window.Antialiasing_active;
-	GUI.Antialiasing	= Application.Window.Antialiasing_active;
-
+	Antialiasing	= Application.Window.Antialiasing_active;
+	
 	//Start Animations
 	for (unsigned int i = 0; i<AnimationsManager.Animations.size(); i++)
 		AnimationsManager.Animations[i]->Start();
@@ -1419,7 +1372,7 @@ void CSIGame::ResetObjects(void)
 	SceneGraph.Init();
 
 	for(unsigned int i=0; i<CBN_MAX_BONUSES; i++)
-		BonusManager->Bonus[i].Init();
+		BonusManager->Bonus[i]->Init();
 	
 	EndByTime  = false;
 	EndByFrame = false;
@@ -1945,13 +1898,13 @@ void CSIGame::ReceiveMessage(RTDESK_CMsg *pMsg)
 			{
 			case CBN_BONUS_3D:
 				BonusManager->NextBonus	 = CBN_BONUS_LASER;
-				Scene.AngleStart.v[XDIM] = fmod(Scene.Angle.v[XDIM], 360);
-				Scene.AngleStart.v[YDIM] = fmod(Scene.Angle.v[YDIM], 360);
+				Scene.Angle.v[XDIM] = fmod(Scene.Angle.v[XDIM], 360);
+				Scene.Angle.v[YDIM] = fmod(Scene.Angle.v[YDIM], 360);
 				OutEvent(CSIG_CHANGING_2_3D);
 				break;
 			case CBN_BONUS_LASER:
 				BonusManager->NextBonus = CBN_BONUS_WEAPON;
-				if (!Players[CurrentPlayer]->Laser[CPL_LEFT_LASER].Alive() || !Players[CurrentPlayer]->Laser[CPL_RIGHT_LASER].Alive())
+				if (!Players[CurrentPlayer]->Laser[CPL_LEFT_LASER]->Alive() || !Players[CurrentPlayer]->Laser[CPL_RIGHT_LASER]->Alive())
 					for (unsigned int i = 0; i < CPL_MAX_LASERS; i++)
 						Players[CurrentPlayer]->ActivateLaser((CPL_PLAYER_LASER)i);
 				break;
@@ -2172,6 +2125,8 @@ void CSIGame::InitObjectReferences()
 
 	//Assign the Game singleton to all the navy
 	SceneGraph.SetGameRef(this);
+
+	GUI.SetTexturesManager((CCharacter*) &TexturesManager);
 }
 
 /**
@@ -2207,7 +2162,6 @@ void CSIGame::InitTimers()
 	//Assign Timer Manager for the AniTimer of Texture Animation 
 
 	//Assign Timer Manager for every Bonus Timer and BonusManager
-	BonusManager->SetLocalTimers();
 	BonusManager->Timer[CBN_UPD_PERIOD].SetAlarm(SIGLBD_MAX_UPDATETIME);
 	BonusManager->Timer[CBN_RND_PERIOD].SetAlarm(SIGLBD_MAX_RENDERTIME);
 
@@ -2219,6 +2173,8 @@ void CSIGame::InitTimers()
 
 	ShootsManager->Timer[CSH_UPD_PERIOD].SetAlarm(SIGLBD_MAX_UPDATETIME);
 	ShootsManager->Timer[CSH_UPD_PERIOD].Activate();
+
+	BonusManager->SetLocalTimers();
 
 	//Assign Timer Manager for the Timer of the navy
 	Navy->Timer.resize	(CN_MAX_TIMERS);
@@ -2280,8 +2236,8 @@ void CSIGame::Loading ()
 
 		for(i=0;i<Players.size();i++){
 			Players[i]->Mesh = MeshesManager.GetMesh(Players[i]->IndMesh);
-			Players[i]->Laser[CPL_LEFT_LASER].Mesh = MeshesManager.GetMesh(Players[i]->Laser[CPL_LEFT_LASER].IndMesh);
-			Players[i]->Laser[CPL_RIGHT_LASER].Mesh = MeshesManager.GetMesh(Players[i]->Laser[CPL_RIGHT_LASER].IndMesh);
+			Players[i]->Laser[CPL_LEFT_LASER]->Mesh = MeshesManager.GetMesh(Players[i]->Laser[CPL_LEFT_LASER]->IndMesh);
+			Players[i]->Laser[CPL_RIGHT_LASER]->Mesh = MeshesManager.GetMesh(Players[i]->Laser[CPL_RIGHT_LASER]->IndMesh);
 			Players[i]->FitMeshIntoBoundingBox();
 		}
 	
@@ -2330,13 +2286,13 @@ void CSIGame::ReshapeGL(void)									// Reshape The Window When It's Moved Or R
 
 	if (CHAR_2D != RenderMode)
 	{
-		Scene.Angle.v[YDIM] = -40;
+		Scene.Angle.v[XDIM] = -40;
 		if (CPL_NO_PLAYER != CurrentPlayer)
 			Players[CurrentPlayer]->Position.v[YDIM] = CPL_PLAYER_Y_3D;
 	}
 	else 
 	{
-		Scene.Angle.v[YDIM] = 0;
+		Scene.Angle.v[XDIM] = 0;
 		if (CPL_NO_PLAYER != CurrentPlayer)
 			Players[CurrentPlayer]->Position.v[YDIM] = CPL_PLAYER_Y_2D;
 	}
@@ -2344,7 +2300,7 @@ void CSIGame::ReshapeGL(void)									// Reshape The Window When It's Moved Or R
 	if (CPL_NO_PLAYER != CurrentPlayer)
 		Players[CurrentPlayer]->SetAABBInGlobalCoord();
 #endif
-	Scene.Angle.v[XDIM] = 0;
+	Scene.Angle.v[YDIM] = 0;
 
 	//Set simulation up to date for starting just in the next loop
 	if(DiscreteSimulation)

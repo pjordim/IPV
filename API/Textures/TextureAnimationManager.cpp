@@ -3,7 +3,7 @@
 	Last update: 2013-06
 */
 
-#include"TextureAnimationManager.h"
+#include <TextureAnimationManager.h>
 
 
 CTextureAnimationManager::CTextureAnimationManager(){

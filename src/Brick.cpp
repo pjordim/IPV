@@ -7,7 +7,7 @@
 
 
 #include <SITexturesResources.h>
-#include <TexturesManager.h>
+#include <UGKTexturesManager.h>
 #include <Brick.h>
 #include <GameSounds.h>
 #include <GameCharacters.h>
@@ -22,8 +22,7 @@ void CBrick::Init()
 	ResetTransformations();
 	Rotation.v[YDIM] = 180.0;
 
-	SetAABBInGlobalCoord(CB_BRICK_WIDTH, CB_BRICK_LENGTH, CB_BRICK_HEIGHT);
-	MoveTo(0.0, 0.0, 0.0);
+	UpdateAABB(CB_BRICK_WIDTH, CB_BRICK_LENGTH, CB_BRICK_HEIGHT);
 }
 
 ///For physics

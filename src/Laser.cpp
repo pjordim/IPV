@@ -52,16 +52,11 @@ bool CLaser::Init ()
 	Timer[CL_RND_PERIOD].ms2Ticks(SIGLBD_MAX_RENDERTIME);
 	Explosion.Init(SIGLBD_MAX_RENDERTIME);
 
-	//Space position and AABB
-	CharAABB.AABB[CHAR_BBSIZE][XDIM].Value			=	0.20;
-	CharAABB.AABB[CHAR_BBSIZE][YDIM].Value			=	0.25f;
-	CharAABB.AABB[CHAR_BBSIZE][ZDIM].Value			=	0.0f;
-
 	RenderMode				= CHAR_3D;
 #ifndef CHAR_USE_AABB
-	UpdateAABB();			///Update by default the AABB relative to local coordinates
-#endif	
-	MoveTo(0.0f, 0.0f, SIGLBD_DEFAULT_Z_POSITION);	//Implicitly updates by default the AABB relative to local coordinates and collision detector also
+	UpdateAABB(0.20, 0.25f, 0.0f);			///Update by default the AABB relative to local coordinates
+#endif
+	Position.Set(0.0f, 0.0f, SIGLBD_DEFAULT_Z_POSITION);	//Implicitly updates by default the AABB relative to local coordinates and collision detector also
 
 	yi				=	0.00;  // movimiento de la nave en la coordenada y
 	yi_speed		=	0.01f; // velocidad de la nave en la coordenada y
@@ -136,6 +131,9 @@ void CLaser::Collided (CCharacter *CollidedChar)
 */
 void CLaser::Render (void)
 {	
+	if (!Alive())
+		return;
+
 	///At this version, lasers can only be displayed when in 3D mode
 	switch(RenderMode)
 	{
@@ -157,6 +155,15 @@ void CLaser::Render (void)
 		break;
 	default: return;
 	}
+
+	if (Explosion.Alive())
+		Explosion.Render();
+	else if (Explosion.Active())
+		{
+			RTDESK_CMsg *Msg = GetMsgToFill(UMSG_MSG_BASIC_TYPE);
+			SendMsg(Msg, Directory[CHARS_GAME_REF], RTDESKT_INMEDIATELY);
+			SetDefault();
+		}
 }
 
 /**   

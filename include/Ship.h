@@ -10,7 +10,7 @@
 #define CS_SHIP
 
 #include <ExplosiveChar.h>
-#include <Textures\Texture.h>
+#include <UGKTexture.h>
 #include <SIMessage.h>
 
 #define CS_MAX_HEALTH			 25	//Maximun amount of health of a given Ship by default

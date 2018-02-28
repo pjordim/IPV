@@ -16,7 +16,6 @@ namespace UGK
 {
 	class CCharacter;
 	typedef std::vector<CCharacter*> CharacterList;
-	//typedef std::vector <CCharacter*>	CHAR_CHARACTER_VECTOR;
 
 	typedef enum
 	{

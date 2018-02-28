@@ -13,7 +13,7 @@
 
 #include <UGKSoundsManager.h>
 #include <ExplosiveChar.h>
-#include <TexturesManager.h>
+#include <UGKTexturesManager.h>
 #include <GlobalTiming.h>
 
 /**

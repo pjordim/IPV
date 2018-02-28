@@ -71,6 +71,7 @@ namespace UGK
 		{
 			if (NULL != Sound)
 				return Mix_PlayChannel(channel, Sound, loops);
+			return UGKSND_NO_CHANNEL;
 		}
 
 		/**
@@ -82,6 +83,7 @@ namespace UGK
 		{
 			if (NULL != Sound)
 				return Mix_PlayChannel(LastChannel, Sound, loops);
+			return UGKSND_NO_CHANNEL;
 		}
 
 

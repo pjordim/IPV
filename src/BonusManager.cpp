@@ -10,28 +10,17 @@
 #include <BonusManager.h>
 #include <RTDeskMsg.h>
 #include <SIMessage.h>
+#include <UGKCharactersPool.h>
 #include <GameCharacters.h>
 #include <GlobalDefs.h>
 #include <GlobalTiming.h>
+
+extern CCharactersPool	*CharacterPool;   ///< Pool of CCharacters
 
 /////////////////////////////////////////////////
 //
 // Bonus manager Initialization
 //
-
-/**
-*	@fn void CBonusManager::SetLocalTimers()
-*	Set the global timers to every bonus available and start up local ones
-*/
-void CBonusManager::SetLocalTimers()
-{
-	unsigned int i;
-
-	CExplosiveChar::SetLocalTimers(CBN_MAX_TIMERS);
-
-	for (i = 0; i < CBN_MAX_BONUSES; i++) 
-		Bonus[i].SetLocalTimers(CBN_MAX_TIMERS);
-}
 
 /**
 *	@fn void CBonusManager::SetEndingCriteria(bool ByTime, bool ByFrame)
@@ -44,8 +33,26 @@ void CBonusManager::SetEndingCriteria(bool ByTime, bool ByFrame)
 
 	for (unsigned int i = 0; i < CBN_MAX_BONUSES; i++)
 	{
-		Bonus[i].EndByTime	= ByTime;
-		Bonus[i].EndByFrame = ByFrame;
+		Bonus[i]->EndByTime	= ByTime;
+		Bonus[i]->EndByFrame = ByFrame;
+	}
+}
+
+
+void CBonusManager::SetLocalTimers()
+{
+	Timer.resize(CBN_MAX_TIMERS);
+	UpdateSF(TimerManager.GetSF());	//The same as done in explosive char
+
+	for (unsigned int i = 0; i < CBN_MAX_BONUSES; i++)
+	{
+		Bonus[i]->SetLocalTimers(CBN_MAX_TIMERS);
+		//Set the sampling frequency tuple info into every timer of every bonus
+		for (unsigned int t = 0; t < CBN_MAX_TIMERS; t++)
+		{
+			Bonus[i]->UpdateSF(TimerManager.GetSF());
+			Bonus[i]->Timer[t].SetAlarm(Timer[t].GetAlarmPeriod());
+		}
 	}
 }
 
@@ -62,27 +69,20 @@ void CBonusManager::Init ()
 
 	for (unsigned int i = 0; i < CBN_MAX_BONUSES; i++)
 	{
-		Bonus[i].Init();
-		Bonus[i].Bottom	= Bottom;
-		Bonus[i].UpdateSF(TimerManager.GetSF());
-		Bonus[i].Timer[CBN_UPD_PERIOD].SetAlarm(Timer[CBN_UPD_PERIOD].GetAlarmPeriod());
+		Bonus[i] = (CBonus*)CharacterPool->get(CHARS_BONUS, UGKOBJM_NO_SUBTYPE);
 
-#ifdef CHAR_USE_QUADTREE
-		Bonus[i].SetQTRoot(QTRoot);
-#elif CHAR_USE_AABB
-#endif
+		Bonus[i]->UpdateAABBInColDetect(CBN_WIDTH_2D, CBN_HEIGTH_2D, CBN_LENGTH_2D);
 
 		//Set ending criteria
-		Bonus[i].EndByTime	= EndByTime;
-		Bonus[i].EndByFrame	= EndByFrame;
-
-		for (unsigned s = 0; s < Sound.size();s++)
-			Bonus[i].SetSound(Sound[s], s);
+		Bonus[i]->EndByTime		= EndByTime;
+		Bonus[i]->EndByFrame	= EndByFrame;
 	}
 
-	Bonus[CBN_BONUS_3D].SetGenPercentage(0.5);	//5 into one thousand 0.5%
-	Bonus[CBN_BONUS_LASER].SetGenPercentage(0.25);	//2.5 into one thousand 0.5%
-	Bonus[CBN_BONUS_WEAPON].SetGenPercentage(0.025);
+	SetLocalTimers();
+
+	Bonus[CBN_BONUS_3D]->SetGenPercentage(0.5);	//5 into one thousand 0.5%
+	Bonus[CBN_BONUS_LASER]->SetGenPercentage(0.25);	//2.5 into one thousand 0.5%
+	Bonus[CBN_BONUS_WEAPON]->SetGenPercentage(0.025);
 
 	NextBonus = CBN_BONUS_3D;
 
@@ -99,29 +99,16 @@ void CBonusManager::SetQTRoot(QuadtreeRoot *QTR)
 	QTRoot = QTR;
 
 	for (unsigned int i = 0; i < CBN_MAX_BONUSES; i++)
-		Bonus[i].SetQTRoot(QTR);
+		Bonus[i]->SetQTRoot(QTR);
 }
 #elif CHAR_USE_AABB
 #endif
 
 CBonusManager::CBonusManager()
 {
-	unsigned int b,	//Bonuses iterator
-				 t; //timers iterator
-
-	HRTM_SF* SF = TimerManager.GetSF();
+	unsigned int b;	//Bonuses iterator
 
 	msgUpd = RTDM_NO_MSG;
-
-	Timer.resize(CBN_MAX_TIMERS);
-	for (b = 0; b < CBN_MAX_BONUSES; b++)
-	{
-		Bonus[b].Timer.resize(CBN_MAX_TIMERS);
-		//Set the sampling frequency tuple info into every timer of every bonus
-		for (t = 0; t < CBN_MAX_TIMERS; t++)
-			Bonus[b].Timer[t].SetSF(SF);
-	}
-
 	Init();
 }
 
@@ -133,9 +120,9 @@ void CBonusManager::AssignSounds2Bonus()
 {
 	for (unsigned int i = 0; i < CBN_MAX_BONUSES; i++)
 	{
-		Bonus[i].SetSoundsAmount(Sound.size());
+		Bonus[i]->SetSoundsAmount(Sound.size());
 		for (unsigned s = 0; s < Sound.size(); s++)
-			Bonus[i].SetSound(Sound[s], s);
+			Bonus[i]->SetSound(Sound[s], s);
 	}
 }
 	
@@ -152,12 +139,12 @@ void CBonusManager::Render(void)
 	case CHAR_2D:
 	case CHAR_LINES3D:
 	case CHAR_3D:
-		for (unsigned int k=0; k < CBN_MAX_BONUSES; k++){
-			if(Bonus[k].Alive())
-				Bonus[k].Render();
-			if(Bonus[k].Explosion.Alive()){
-				Bonus[k].Explosion.Update();
-				Bonus[k].Explosion.Render();
+		for (unsigned int b=0; b < CBN_MAX_BONUSES; b++){
+			if(Bonus[b]->Alive())
+				Bonus[b]->Render();
+			if(Bonus[b]->Explosion.Alive()){
+				Bonus[b]->Explosion.Update();
+				Bonus[b]->Explosion.Render();
 			}
 		}
 		break;
@@ -172,11 +159,10 @@ void CBonusManager::Render(void)
 
 void CBonusManager::ChangeRenderMode(CHAR_RENDER_MODE Mode)
 {
-	unsigned int k;
 	RenderMode = Mode;
 
-	for (k=0; k < CBN_MAX_BONUSES; k++)
-		Bonus[k].ChangeRenderMode(Mode);
+	for (unsigned int b=0; b < CBN_MAX_BONUSES; b++)
+		Bonus[b]->ChangeRenderMode(Mode);
 	
 	switch (RenderMode)
 	{
@@ -196,9 +182,9 @@ void CBonusManager::GenerateRandomBonus()
 {
 	// BONUS -> RANDOM BONUS CREATION
 	//It is only allowed to produce a CBN_BONUS_3D Bonus to pass to 3D mode
-	if (!Bonus[NextBonus].Active())
+	if (!Bonus[NextBonus]->Active())
 		//There is no bonus active
-		if (rand() <= Bonus[NextBonus].GenPercent)
+		if (rand() <= Bonus[NextBonus]->GenPercent)
 			{
 				if (DiscreteSimulation) DiscreteGenerateBonus(NextBonus);
 				else GenerateBonus(NextBonus);
@@ -212,13 +198,13 @@ void CBonusManager::SetGameRef(CCharacter *Game)
 	AssignTMG(Game);
 	
 	for (i = 0; i < CBN_MAX_BONUSES; i++)
-		Bonus[i].AssignTMG(Game);
+		Bonus[i]->AssignTMG(Game);
 }
 
 ///Shoots management for the Player and enemy navy
 void CBonusManager::Maintenance()
 {
-	if (!Bonus[NextBonus].Alive())
+	if (!Bonus[NextBonus]->Alive())
 	{
 		GenerateRandomBonus();
 		return;
@@ -231,8 +217,8 @@ void CBonusManager::UpdateActiveBonus(void)
 	TimerManager.GetTimer(SIGLBT_UPDATE_TIMING)->InitCounting();
 	#endif
 
-	if (Bonus[NextBonus].Alive())
-		Bonus[NextBonus].Update();
+	if (Bonus[NextBonus]->Alive())
+		Bonus[NextBonus]->Update();
 
 	#if defined(XM_UPD_TIME_DISC) || defined(XM_UPD_TIME_CONT)
 	TimerManager.EndAccCounting(SIGLBT_UPDATE_TIMING);
@@ -244,17 +230,17 @@ RTDESK_TIME CBonusManager::GenerateBonus(CBN_BONUS_TYPE BonusType)
 	double		msUpdBonus;
 	RTDESK_TIME ticksUpdBonus;
 
-	Bonus[BonusType].Type				= CHARS_BONUS;
-	Bonus[BonusType].SubType			= BonusType;
-	Bonus[BonusType].Activate();
-	Bonus[BonusType].MoveTo(0.0f, CBM_BONUS_INITIAL_Y3D, 0.0f);
+	Bonus[BonusType]->Type				= CHARS_BONUS;
+	Bonus[BonusType]->SubType			= BonusType;
+	Bonus[BonusType]->Activate();
+	Bonus[BonusType]->MoveTo(0.0f, CBM_BONUS_INITIAL_Y3D, 0.0f);
 
-	msUpdBonus = abs(Bonus[BonusType].CharAABB.AABB[CHAR_BBSIZE][YDIM].Value/Bonus[BonusType].Speed.v[YDIM]);
+	msUpdBonus = abs(Bonus[BonusType]->CharAABB.AABB[CHAR_BBSIZE][YDIM].Value/Bonus[BonusType]->Speed.v[YDIM]);
 	if(msUpdBonus > SIGLBD_MAX_UPDATETIME) msUpdBonus = SIGLBD_MAX_UPDATETIME;
-	Bonus[BonusType].msUpdMsg	 = msUpdBonus;
+	Bonus[BonusType]->msUpdMsg	 = msUpdBonus;
 	ticksUpdBonus = Timer[CBN_UPD_PERIOD].ms2Ticks(msUpdBonus);
-	Bonus[BonusType].UpdateSF(TimerManager.GetSF());
-	Bonus[BonusType].Timer[CBN_UPD_PERIOD].SetAlarm(ticksUpdBonus);
+	Bonus[BonusType]->UpdateSF(TimerManager.GetSF());
+	Bonus[BonusType]->Timer[CBN_UPD_PERIOD].SetAlarm(ticksUpdBonus);
 	return ticksUpdBonus;
 }
 
@@ -270,10 +256,10 @@ void CBonusManager::DiscreteGenerateBonus(CBN_BONUS_TYPE BonusType)
 	TimerManager.GetTimer(SIGLBT_RTDSKMM_TIMING].InitCounting();
 	#endif
 
-	Bonus[BonusType].SetMsgDispatcher(GetMsgDispatcher());
+	Bonus[BonusType]->SetMsgDispatcher(GetMsgDispatcher());
 	msg = GetMsgToFill(UMSG_MSG_BASIC_TYPE);
 	msg->Type = UMSG_MSG_BASIC_TYPE;
-	SendMsg(msg,&Bonus[BonusType],ticksUpdBonus);
+	SendMsg(msg,Bonus[BonusType],ticksUpdBonus);
 
 	#ifdef DEF_RTD_TIME
 	TimerManager.EndAccCounting(SIGLBT_RTDSKMM_TIMING);
@@ -293,7 +279,7 @@ void CBonusManager::SetRenderPeriod(HRT_Timems RP)
 	Timer[CBN_RND_PERIOD].SetAlarm(RP);
 
 	for (unsigned int i = 0; i < CBN_MAX_BONUSES; i++)
-		Bonus[i].Timer[CBN_UPD_PERIOD].SetAlarm(RP);
+		Bonus[i]->Timer[CBN_UPD_PERIOD].SetAlarm(RP);
 }
 
 void CBonusManager::ReceiveMessage(RTDESK_CMsg *pMsg){

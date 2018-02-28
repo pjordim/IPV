@@ -11,7 +11,7 @@
 
 #include <Bonus.h>
 
-#define CBM_BONUS_INITIAL_Y3D	Ceiling+2.0f*CBN_HEIGTH_3D
+#define CBM_BONUS_INITIAL_Y3D	SIGLBD_PG_CEILING+2.0f*CBN_HEIGTH_3D
 
 class CBonusManager: public CExplosiveChar
 {
@@ -19,7 +19,7 @@ class CBonusManager: public CExplosiveChar
 public:
 
 	///Amount of bonuses the manager can take care of
-	CBonus			Bonus[CBN_MAX_BONUSES];
+	CBonus*			Bonus[CBN_MAX_BONUSES];
 	CBN_BONUS_TYPE	NextBonus;
 
 	RTDESK_TIME TimeRTdeskMsg;
@@ -27,9 +27,6 @@ public:
 	bool		EndByTime,
 				EndByFrame,
 				DiscreteSimulation;
-
-	float		Ceiling,		///< Highest position. Edge where to start the life of ht bonus. It has entered into the game
-				Bottom;			///< Lowest position. When the Bonus reaches to that edge, the bouns has gone out of game
 
 	RTDESK_CMsg *msg;			//RTDESK Message Time
 	RTDESK_CMsg *msgUpd;		//RTDESK Message Time

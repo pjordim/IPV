@@ -20,7 +20,7 @@
 #include <UGKMusicsManager.h>
 #include <ScoreManager.h>
 #include <ShootsManager.h>	/// Header File class Manager for the shoots
-#include <TexturesManager.h>/// Header File class Manager for the Textures.
+#include <UGKTexturesManager.h>/// Header File class Manager for the Textures.
 #include <TextureAnimationManager.h>
 #include <SIMessage.h>
 #include <SICharactersFactory.h>
@@ -30,11 +30,13 @@
 #include <UGKCameraManager.h>	// Header File class for the Cameras Manager
 
 #include <SISceneGraph.h>	
+#include <Background.h>
 
 //HW
 #include <SIKeyboard.h>
 #include <UGKGraphicsCard.h>
 #include <UGKAudioHardware.h>
+#include <UGKCamera.h>
 
 //#define CHW_USE_KINECT
 #ifdef CHW_USE_KINECT
@@ -52,7 +54,7 @@ using namespace UGK;
 
 ///General game singletons
 extern CApplication			Application;
-extern CCharacter			Background;
+extern CBackground			Background;
 extern CCamera				*Camera;			///<Singleton declaration of the game camera
 
 extern CSICharactersFactory	*CharacterFactory;	///<Singleton declaration of the character factory that creates as many given characters as demanded

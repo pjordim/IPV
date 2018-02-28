@@ -55,7 +55,12 @@ namespace UGK
 		void Insert(CCharacter *C);			///<Inserts a new object into the structure
 		void Remove(CCharacter *C);			///<Deletes an object from the structure
 
-		void Update(CCharacter *C);			///<Updates an object CharAABB inside the structure.
+		inline void Update(CCharacter *C)			///<Updates an object CharAABB inside the structure.
+		{
+			#ifdef CHAR_USE_QUADTREE
+				C->UpdateCollisionDetection();
+			#endif
+		}
 
 		void Init(void);
 

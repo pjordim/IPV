@@ -11,7 +11,7 @@
 #include <windows.h>
 #endif
 
-#include <gl\gl.h>
+#include <gl.h>
 #include <UGK.h>
 
 #define UGKGLE_ERROR_MNG   /// It defines macros for error handling

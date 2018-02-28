@@ -37,6 +37,7 @@
 //máximos puntos de contacto.
 #define MAX_CONTACTS 100
 
+//For removing or inserting a character into the collision detection internal structures
 #define UGKPHY_COLLISIONABLE true
 #define UGKPHY_NON_COLLISIONABLE false
 
@@ -45,6 +46,9 @@
 //#define UGKPHY_VERLET
 //#define UGKPHY_MIDDLEPOINT
 //#define UGKPHY_RK4
+
+
+
 
 /**
 *	\typedef UGKPHY_DIRECTION

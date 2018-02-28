@@ -33,7 +33,7 @@
 #define CK_ACTION			unsigned char
 #define CK_CHARACTER		UGKS_String
 
-#define CK_ACTION_LIST	std::list<CK_ACTION>
+typedef std::list<CK_ACTION> CK_ACTION_LIST;
 
 
 //All possible control inputs, non standard ASCII codes redefined. See WinUser.h for more information when in windows O.S.
@@ -465,6 +465,8 @@ namespace UGK
 	public:
 		///The map holds the key pressed as an index and the action associated to it
 		std::map<unsigned char, CK_ACTION>	ActionKeys;
+		///Keys pressed down at any given time
+		CK_ACTION_LIST ActivActions;	///<When a key is released, it is removed from this list of pressed keys. It passes to be inactive
 
 		inline void			SetConfigFolder(UGKS_String folder) { this->folder = folder; }
 		inline UGKS_String	GetConfigFolder()					{ return folder; }
@@ -498,9 +500,6 @@ namespace UGK
 			return false;
 		}
 		inline bool ActionIsActive(char PressedKey) { return ActionIsActive(GetAction(PressedKey)); }
-
-		///Keys pressed down at any given time
-		CK_ACTION_LIST ActivActions;	///<When a key is released, it is removed from this list of pressed keys. It passes to be inactive
 
 										//Methods
 #ifdef UGKOS_WINDOWS

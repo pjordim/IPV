@@ -10,7 +10,7 @@
 
 #include <Particle.h>
 #include <GameCharacters.h>
-#include <TexturesManager.h>
+#include <UGKTexturesManager.h>
 
 using namespace UGK;
 
@@ -22,7 +22,7 @@ using namespace UGK;
  */
 void CParticle::Init (void)
 {
-	Activate();
+	SetDefault();
 	PhysicMode	= UGKPHY_LIGHT;
 	Directory.clear();
 	Timer.resize(CP_MAX_TIMERS);

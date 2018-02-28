@@ -732,10 +732,10 @@ void CLevelReader::EndTag(CLiteHTMLTag *pTag, DWORD dwAppData, bool &bAbort)
 					case CHARS_LASER:
 						if(!AnimationExist)
 							for(int i=0;i<CPL_MAX_LASERS;i++)
-								Players[CurrentPlayer]->Laser[i].IndAnimation2D = AnimationsManager.Animations.size()-1;
+								Players[CurrentPlayer]->Laser[i]->IndAnimation2D = AnimationsManager.Animations.size()-1;
 						else
 							for(int i=0;i<CPL_MAX_LASERS;i++)
-								Players[CurrentPlayer]->Laser[i].IndAnimation2D = AnimationsManager.SearchIndOfName(msgAux);
+								Players[CurrentPlayer]->Laser[i]->IndAnimation2D = AnimationsManager.SearchIndOfName(msgAux);
 							break;
 					case CHARS_BACKGROUND:
 						if(!AnimationExist)
@@ -959,27 +959,27 @@ if (bAbort) return;
 					break;
 				case CHARS_LASER:
 					msg = rText;
-					if (msg.compare(defaultPlayer->Laser[CPL_LEFT_LASER].GetMeshName()))
+					if (msg.compare(defaultPlayer->Laser[CPL_LEFT_LASER]->GetMeshName()))
 					{		//return 0 if strings are equal
 						int ind = MeshesManager.AddModel(msg);
-						Players[CurrentPlayer]->Laser[CPL_LEFT_LASER].IndMesh	= ind;
-						Players[CurrentPlayer]->Laser[CPL_LEFT_LASER].Mesh		= MeshesManager.GetMesh(Players[CurrentPlayer]->Laser[CPL_LEFT_LASER].IndMesh);
-						Players[CurrentPlayer]->Laser[CPL_LEFT_LASER].SetMeshName(Players[CurrentPlayer]->Laser[CPL_LEFT_LASER].Mesh->GetFileName());
+						Players[CurrentPlayer]->Laser[CPL_LEFT_LASER]->IndMesh	= ind;
+						Players[CurrentPlayer]->Laser[CPL_LEFT_LASER]->Mesh		= MeshesManager.GetMesh(Players[CurrentPlayer]->Laser[CPL_LEFT_LASER]->IndMesh);
+						Players[CurrentPlayer]->Laser[CPL_LEFT_LASER]->SetMeshName(Players[CurrentPlayer]->Laser[CPL_LEFT_LASER]->Mesh->GetFileName());
 				
-						Players[CurrentPlayer]->Laser[CPL_RIGHT_LASER].IndMesh = MeshesManager.MeshesAmount() - 1;	//From 0 to size-1
-						Players[CurrentPlayer]->Laser[CPL_RIGHT_LASER].Mesh		= MeshesManager.GetMesh(Players[CurrentPlayer]->Laser[CPL_RIGHT_LASER].IndMesh);
-						Players[CurrentPlayer]->Laser[CPL_RIGHT_LASER].SetMeshName(Players[CurrentPlayer]->Laser[CPL_RIGHT_LASER].Mesh->GetFileName());
+						Players[CurrentPlayer]->Laser[CPL_RIGHT_LASER]->IndMesh = MeshesManager.MeshesAmount() - 1;	//From 0 to size-1
+						Players[CurrentPlayer]->Laser[CPL_RIGHT_LASER]->Mesh		= MeshesManager.GetMesh(Players[CurrentPlayer]->Laser[CPL_RIGHT_LASER]->IndMesh);
+						Players[CurrentPlayer]->Laser[CPL_RIGHT_LASER]->SetMeshName(Players[CurrentPlayer]->Laser[CPL_RIGHT_LASER]->Mesh->GetFileName());
 					}
 					else
 					{		//return 0 if strings are equal
 						MeshesManager.AddModel(msg);
-						Players[CurrentPlayer]->Laser[CPL_LEFT_LASER].IndMesh	= defaultPlayer->Laser[CPL_LEFT_LASER].IndMesh;
-						Players[CurrentPlayer]->Laser[CPL_LEFT_LASER].Mesh		= defaultPlayer->Laser[CPL_LEFT_LASER].Mesh;
-						Players[CurrentPlayer]->Laser[CPL_LEFT_LASER].SetMeshName(defaultPlayer->Laser[CPL_LEFT_LASER].Mesh->GetFileName());
+						Players[CurrentPlayer]->Laser[CPL_LEFT_LASER]->IndMesh	= defaultPlayer->Laser[CPL_LEFT_LASER]->IndMesh;
+						Players[CurrentPlayer]->Laser[CPL_LEFT_LASER]->Mesh		= defaultPlayer->Laser[CPL_LEFT_LASER]->Mesh;
+						Players[CurrentPlayer]->Laser[CPL_LEFT_LASER]->SetMeshName(defaultPlayer->Laser[CPL_LEFT_LASER]->Mesh->GetFileName());
 				
-						Players[CurrentPlayer]->Laser[CPL_RIGHT_LASER].IndMesh		= defaultPlayer->Laser[CPL_LEFT_LASER].IndMesh;
-						Players[CurrentPlayer]->Laser[CPL_RIGHT_LASER].Mesh		= defaultPlayer->Laser[CPL_LEFT_LASER].Mesh;
-						Players[CurrentPlayer]->Laser[CPL_RIGHT_LASER].SetMeshName(defaultPlayer->Laser[CPL_LEFT_LASER].Mesh->GetFileName());
+						Players[CurrentPlayer]->Laser[CPL_RIGHT_LASER]->IndMesh		= defaultPlayer->Laser[CPL_LEFT_LASER]->IndMesh;
+						Players[CurrentPlayer]->Laser[CPL_RIGHT_LASER]->Mesh		= defaultPlayer->Laser[CPL_LEFT_LASER]->Mesh;
+						Players[CurrentPlayer]->Laser[CPL_RIGHT_LASER]->SetMeshName(defaultPlayer->Laser[CPL_LEFT_LASER]->Mesh->GetFileName());
 					}
 				
 					break;

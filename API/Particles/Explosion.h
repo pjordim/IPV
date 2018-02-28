@@ -9,7 +9,7 @@
 #ifndef CE_EXPLOSION   //Se borra la macro explocion
 #define CE_EXPLOSION   //Se define la macro explocion
 
-#include <UGKParticleSystem.h>
+#include <ParticleSystem.h>
 #include <GlobalDefs.h>
 
 #define CEX_MAX_HEALTH			500 //Maximun amount of health of a given Supply Ship by default

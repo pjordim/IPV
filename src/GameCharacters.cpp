@@ -41,6 +41,7 @@ UGKS_String CHARS_Tags[CHARS_MAX_CHARTYPE] =
 	CHARS_BUNKER,				///<A collection of bricks together in order to defend the player
 	CHARS_CIRCLESHIP,			///<Alien space ships that turns once and once again in clircles on the screen
 	CHARS_GAME,					///<The game itself 
+	CHARS_GUI_GADGET,			///<Temporal character type. This must be done in a pool for the GUI in UGK
 	CHARS_LASER,				///<Additional shooting left or right device for the player
 	CHARS_NAVY,					///<Holds all the supplyships and all types of ships
 	CHARS_NAVYSHOOT,
@@ -61,14 +62,13 @@ UGKS_String CHARS_Tags[CHARS_MAX_CHARTYPE] =
 	"BONUS",
 	"BONUSMANAGER",
 	"BOOMETER",
-	"BOSS",
 	"BRICK",
 	"BUNKER",
 	"CIRCLESHIP",
 	"GAME",
+	"GADGET",
 	"LASER",
 	"NAVY",
-	"OVERBOSS",
 	"PLAYER",
 	"REACTOR",
 	"SHIP",

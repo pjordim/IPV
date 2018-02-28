@@ -25,12 +25,11 @@ typedef enum {
 	CHARS_BOOMETER,
 	CHARS_BRICK,				///<Pieces that make a bunker
 	CHARS_BUNKER,				///<A collection of bricks together in order to defend the player
-	CHARS_BOSS,
 	CHARS_CIRCLESHIP,			///<Alien space ships that turns once and once again in clircles on the screen
-	CHARS_GAME,					///<The game itself 
+	CHARS_GAME,					///<The game itself
+	CHARS_GUI_GADGET,			///<Temporal character type. This must be done in a pool for the GUI in UGK
 	CHARS_LASER,				///<Additional shooting left or right device for the player
 	CHARS_NAVY,					///<Holds all the supplyships and all types of ships
-	CHARS_OVERBOSS,
 	CHARS_PLAYER,				///<The player
 	CHARS_REACTOR,				///<Extra power engines and shooters for the player. Obtained after the corresponding bonus has been won
 	CHARS_SHIP,					///<Alien normal space ships
@@ -40,18 +39,6 @@ typedef enum {
 	CHARS_WEAPON,				///<Not available by the moment
 	CHARS_MAX_CHARTYPE			///<Only for character types management. No object exist in the game for this type
 } GCHARS_CharacterType;
-
-
-/**
-* @enum GCHARS_References
-* It defines the singletons order to reference by any existing character in the game
-*/
-typedef enum
-{
-	CHARS_TEXTURES_MNGR_REF,
-	CHARS_GAME_REF,
-	CHARS_MAX_REFERENCES
-} GCHARS_References;
 
 /**   
    * @enum CHARS_CHARACTER_STATE

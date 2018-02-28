@@ -104,10 +104,7 @@ namespace UGK
 		 * @brief  Gets the total number of different types of Characters that this factory can produce. \n
 		 *         Pure Virtual Function. It must be redefined in the child class.
 		 */
-		inline int getNumDistinctCharacterTypes()
-		{
-			return CharacterDict.size();
-		}
+		virtual int getNumDistinctCharacterTypes();
 	};
 }
 

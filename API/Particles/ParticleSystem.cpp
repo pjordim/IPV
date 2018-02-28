@@ -11,6 +11,8 @@
 #include <ParticleSystem.h>
 #include <GameCharacters.h>
 
+extern CTexturesManager TexturesManager;
+
 void CParticleSystem::Init ()
 {
 	/// PARTICLES INITIALIZATION
@@ -24,13 +26,17 @@ void CParticleSystem::Init ()
 
 	Timer.resize(CP_MAX_TIMERS);
 
+	Directory.resize(CHARS_MAX_REFERENCES);
+	Directory[CHARS_TEXTURES_MNGR_REF] = (CCharacter*)&TexturesManager;//Neccesary to access the textures used for every character to be rendered
+
 	for (int loop=0;loop<CPS_MAX_PARTICLES;loop++)				/// Initializes all the particles
 	{
 		Particle[loop].Life			= Life + float(rand()%10000)/10000.0f;			/// Give All The Particles Full Life in the range [0.5,1.5]
 		Particle[loop].FadingSpeed	= FadingSpeed + float(rand()%10000)*0.0001f;	/// Random Fading Speed
 
-		if (Directory.size())
-			Particle[loop].Directory[CHARS_TEXTURES_MNGR_REF] = Directory[CHARS_TEXTURES_MNGR_REF];	//Tipically CTM_PARTICLE2
+		Particle[loop].Directory.resize(CHARS_MAX_REFERENCES);
+		Particle[loop].Directory[CHARS_TEXTURES_MNGR_REF] = Directory[CHARS_TEXTURES_MNGR_REF];	//Tipically CTM_PARTICLE2
+		
 		V = float(rand()%4+2) * InitialParticleSpeed;			/// Speed of the particle 
 		Angle = float(rand()%360);								/// Angle of the particle
 

@@ -187,11 +187,11 @@ void CInitializationParser::InitializeSounds2DefaultChar()
 
 	for (l = 0; l < CPL_MAX_LASERS; l++)
 	{
-		defaultPlayer->Laser[l].SetSoundsAmount(CPL_MAX_SND);
-		defaultPlayer->Laser[l].SetSound(SoundsManager.GetSound(CGS_EXPLOSION_SND), CPL_EXPLOSION_SND);
-		defaultPlayer->Laser[l].SetSound(SoundsManager.GetSound(CGS_SHOOT_SND), CPL_SHOOT_SND);
-		defaultPlayer->Laser[l].SetSound(SoundsManager.GetSound(CGS_SHOOT3D_SND), CPL_SHOOT3D_SND);
-		defaultPlayer->Laser[l].SetSound(SoundsManager.GetSound(CGS_TOUCH_SND), CPL_TOUCH_SND);
+		defaultPlayer->Laser[l]->SetSoundsAmount(CPL_MAX_SND);
+		defaultPlayer->Laser[l]->SetSound(SoundsManager.GetSound(CGS_EXPLOSION_SND), CPL_EXPLOSION_SND);
+		defaultPlayer->Laser[l]->SetSound(SoundsManager.GetSound(CGS_SHOOT_SND), CPL_SHOOT_SND);
+		defaultPlayer->Laser[l]->SetSound(SoundsManager.GetSound(CGS_SHOOT3D_SND), CPL_SHOOT3D_SND);
+		defaultPlayer->Laser[l]->SetSound(SoundsManager.GetSound(CGS_TOUCH_SND), CPL_TOUCH_SND);
 	}
 	//Default Ship sounds initialization 
 	defaultShip->SetSoundsAmount(CN_MAX_SND);
@@ -238,58 +238,49 @@ void CInitializationParser::InitializeDefaults()
 	//BONUS
 	AssignTMG(defaultChar);
 
-	//BONUS
-	defaultBonus->AssignTMG(Game);
-	//BUNKER
-	AssignTMG(defaultBunker);
-	//BRICK
-	AssignTMG(defaultBrick);
 	defaultBrick->Column = 0;
 	defaultBrick->Row    = 0;
 
 	//PLAYER
 	defaultPlayer->MoveTo(0.0f, SIGLBD_PG_BOTTOM, 0.0f);
-	defaultPlayer->AssignTMG(Game);
 
 	defaultPlayer->Init();
 	defaultPlayer->ResizeDirectory(CHARS_MAX_REFERENCES);
-	defaultPlayer->AssignTextMngr((CCharacter *)&TexturesManager);
 	defaultPlayer->Explosion.SubType = CE_PLAYER_EXPLOSION;
 
 	defaultPlayer->UpdateSF(TimerManager.GetSF());
 	//defaultPlayer->Timer[CPL_RND_PERIOD].SetAlarm(DefaultRndPeriod[CHARS_PLAYER]);
-	defaultPlayer->Antialiasing = Application.Window.Antialiasing_active;
 
 	for (i = 0; i<CPL_MAX_LASERS; i++)
 	{
-		defaultPlayer->Laser[i].Billboard = Application.Window.Billboard;
-		defaultPlayer->Laser[i].BonusManager = BonusManager;
-		defaultPlayer->Laser[i].AssignTMG(Game);
-		defaultPlayer->Laser[i].Init();
-		defaultPlayer->Laser[i].Explosion.SubType = CE_LASER_EXPLOSION;
+		defaultPlayer->Laser[i]->Billboard = Application.Window.Billboard;
+		defaultPlayer->Laser[i]->BonusManager = BonusManager;
+		defaultPlayer->Laser[i]->AssignTMG(Game);
+		defaultPlayer->Laser[i]->Init();
+		defaultPlayer->Laser[i]->Explosion.SubType = CE_LASER_EXPLOSION;
 	}
 
 	//NAVY
 	AssignTMG(Navy);
 
 	//SHIP
-	defaultShip->AssignTMG(Game);
 	defaultShip->Explosion.SubType	= CE_SHIP_EXPLOSION;
 	//SUPPLY SHIP
-	defaultSShip->AssignTMG(Game);
 	defaultSShip->Explosion.SubType = CE_SUPPLYSHIP_EXPLOSION;
 	//CIRCLE SHIP
-	defaultCShip->AssignTMG(Game);
 	defaultCShip->Explosion.SubType = CE_SUPPLYSHIP_EXPLOSION;
 	//BACKGROUND
 	Background.Init();
 
 	//Initialize defaults timers
 	//BONUS
+	//Initial size is equal for eery different bonus in the system
+	defaultBonus->UpdateAABBInColDetect(CBN_WIDTH_2D, CBN_HEIGTH_2D, CBN_LENGTH_2D);
 	defaultBonus->SetLocalTimers(CBN_MAX_TIMERS);
-	defaultBonus->Timer[CBN_RND_PERIOD].SetAlarm(BonusManager->Timer[CBN_RND_PERIOD].GetAlarmPeriod());
-	defaultBonus->Timer[CBN_UPD_PERIOD].SetAlarm(BonusManager->Timer[CBN_UPD_PERIOD].GetAlarmPeriod());
-
+	//Set the sampling frequency tuple info into every timer of every bonus
+	for (unsigned int t = 0; t < CBN_MAX_TIMERS; t++)
+		defaultBonus->Timer[t].SetAlarm(BonusManager->Timer[t].GetAlarmPeriod());
+	
 	//SHIP
 	defaultShip->SetLocalTimers(CS_MAX_TIMERS);
 	defaultShip->Timer[CS_RND_PERIOD].SetAlarm(Navy->Timer[CN_RND_PERIOD].GetAlarmPeriod());
@@ -613,7 +604,7 @@ void CInitializationParser::EndTag(CLiteHTMLTag *pTag, DWORD dwAppData, bool &bA
 					break;
 				case CHARS_LASER:
 					for(int i=0;i<CPL_MAX_LASERS;i++)
-						defaultPlayer->Laser[i].IndAnimation2D = AnimationsManager.Animations.size()-1;
+						defaultPlayer->Laser[i]->IndAnimation2D = AnimationsManager.Animations.size()-1;
 						break;
 				case CHARS_BACKGROUND:
 					Background.IndAnimation2D = AnimationsManager.Animations.size()-1;
@@ -721,8 +712,8 @@ CTextureAnimation *aniAux;
  				 defaultCShip->Hit_duration	= atof(UGKS_string2charstr(rText));
 				 break;
 			case CHARS_LASER:
-				defaultPlayer->Laser[CPL_LEFT_LASER].Hit_duration	= atof(UGKS_string2charstr(rText));
-				defaultPlayer->Laser[CPL_RIGHT_LASER].Hit_duration	= atof(UGKS_string2charstr(rText));
+				defaultPlayer->Laser[CPL_LEFT_LASER]->Hit_duration	= atof(UGKS_string2charstr(rText));
+				defaultPlayer->Laser[CPL_RIGHT_LASER]->Hit_duration	= atof(UGKS_string2charstr(rText));
 				 break;
 			 case CHARS_PLAYER:
 				 defaultPlayer->Hit_duration	= atof(UGKS_string2charstr(rText));
@@ -760,8 +751,8 @@ CTextureAnimation *aniAux;
  				 defaultCShip->Health	= atof(UGKS_string2charstr(rText));
 				 break;
 			case CHARS_LASER:
-				defaultPlayer->Laser[CPL_LEFT_LASER].Health	= atof(UGKS_string2charstr(rText));
-				defaultPlayer->Laser[CPL_RIGHT_LASER].Health	= atof(UGKS_string2charstr(rText));
+				defaultPlayer->Laser[CPL_LEFT_LASER]->Health	= atof(UGKS_string2charstr(rText));
+				defaultPlayer->Laser[CPL_RIGHT_LASER]->Health	= atof(UGKS_string2charstr(rText));
 				 break;
 			 case CHARS_PLAYER:
 				 defaultPlayer->Health	= atof(UGKS_string2charstr(rText));
@@ -865,9 +856,9 @@ CTextureAnimation *aniAux;
 					int ind = MeshesManager.AddModel(rText);
 					for(i=0;i<CPL_MAX_LASERS;i++)
 					{
-						defaultPlayer->Laser[i].IndMesh = ind;
-						defaultPlayer->Laser[i].Mesh = MeshesManager.GetMesh(ind);
-						defaultPlayer->Laser[i].SetMeshName(defaultPlayer->Laser[i].Mesh->GetFileName());
+						defaultPlayer->Laser[i]->IndMesh = ind;
+						defaultPlayer->Laser[i]->Mesh = MeshesManager.GetMesh(ind);
+						defaultPlayer->Laser[i]->SetMeshName(defaultPlayer->Laser[i]->Mesh->GetFileName());
 					}
 				}
 				 break;

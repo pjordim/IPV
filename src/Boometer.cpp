@@ -8,7 +8,7 @@
 
 #include <Boometer.h>
 #include <SITexturesResources.h>
-#include <TexturesManager.h>
+#include <UGKTexturesManager.h>
 #include <GameCharacters.h>
 
 using namespace UGK;
@@ -17,7 +17,8 @@ CBoometer::CBoometer(UGK::Vector orig, float h, float w, CHAR_TEXTUREID textRef,
 {
 	Position = orig;
 
-	SetAABBInGlobalCoord(h, w, CHAR_AABB_THICKNESS_DEFAULT);
+	UpdateAABB(h, w, CHAR_AABB_THICKNESS_DEFAULT);
+
 	IndTexture2D					= textRef;
 	Directory.resize(CHARS_MAX_REFERENCES);
 	Directory[CHARS_TEXTURES_MNGR_REF] = (CCharacter *) TextureMngr;
@@ -30,8 +31,8 @@ void CBoometer::Render(float levelRatio)
 {
 	//Disable all test
 	GLboolean switchBlend	= glIsEnabled(GL_BLEND);
-
 	GLboolean switchZ		= glIsEnabled(GL_DEPTH_TEST);
+
 	if(switchBlend)	glDisable(GL_BLEND);
 	if(switchZ)		glDisable(GL_DEPTH_TEST);
 	
@@ -55,16 +56,15 @@ void CBoometer::Render(float levelRatio)
 		((CTexturesManager *)Directory[CHARS_TEXTURES_MNGR_REF])->Textures[IndTexture2D]->SetTexture();
 
 		glBegin(GL_QUADS);
-			glTexCoord2f (0, 0);			glVertex2f(Position.v[XDIM], Position.v[YDIM]);//vértice 1
-			glTexCoord2f (levelRatio, 0);	glVertex2f(Position.v[XDIM] + innerWidth, Position.v[YDIM]);//vértice 2
-			glTexCoord2f (levelRatio, 0.9);	glVertex2f(Position.v[XDIM] + innerWidth, Position.v[YDIM] + CharAABB.AABB[CHAR_BBSIZE][YDIM].Value); //vértice 3
-			glTexCoord2f (0, 0.9);			glVertex2f(Position.v[XDIM], Position.v[YDIM] + CharAABB.AABB[CHAR_BBSIZE][YDIM].Value); //vértice 4
+			glTexCoord2f (0, 0);				glVertex2f(Position.v[XDIM], Position.v[YDIM]);//vértice 1
+			glTexCoord2f (levelRatio, 0);		glVertex2f(Position.v[XDIM] + innerWidth, Position.v[YDIM]);//vértice 2
+			glTexCoord2f (levelRatio, 0.95);	glVertex2f(Position.v[XDIM] + innerWidth, Position.v[YDIM] + CharAABB.AABB[CHAR_BBSIZE][YDIM].Value); //vértice 3
+			glTexCoord2f (0, 0.9);				glVertex2f(Position.v[XDIM], Position.v[YDIM] + CharAABB.AABB[CHAR_BBSIZE][YDIM].Value); //vértice 4
 		glEnd();
 	}
 
 	glPopMatrix();
 
-	glColor4f(1, 1, 1, 1);
 	//Enable if they were enabled
 	if(switchBlend)	glEnable(GL_BLEND);
 	if(switchZ)		glEnable(GL_DEPTH_TEST);

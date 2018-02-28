@@ -8,7 +8,7 @@
 
 #include <Shoot.h>
 #include <Bunker.h>
-#include <TexturesManager.h>
+#include <UGKTexturesManager.h>
 #include <GameCharacters.h>
 #include <SITexturesResources.h>
 
@@ -87,9 +87,9 @@ void CBunker::TranslateBunker	(Vector &Pos){
 }
 
 ///Performs a default Bunker at position Pos
-void CBunker:: Init(CBNK_BUNKER_TYPE T, Vector &Pos)
+void CBunker::Init(CBNK_BUNKER_TYPE T, Vector &Pos)
 {
-	Vector BricksPosition;
+	Vector BrickPosition;
 	unsigned int row, col, delta = 4;
 
 	IndTexture2D = CTM_BRICK;
@@ -103,7 +103,7 @@ void CBunker:: Init(CBNK_BUNKER_TYPE T, Vector &Pos)
 
 	// Every bunker is 14 bricks Width and 10 lines high
 	// Put the auxiliar vector BricksPosition at the upper left corner
-	BricksPosition.Set(Pos.v[XDIM]-(CharAABB.AABB[CHAR_BBSIZE][XDIM].Value*0.5f)+(CB_HLF_BRICK_WIDTH),
+	BrickPosition.Set(Pos.v[XDIM]-(CharAABB.AABB[CHAR_BBSIZE][XDIM].Value*0.5f)+(CB_HLF_BRICK_WIDTH),
 					   Pos.v[YDIM]+(CharAABB.AABB[CHAR_BBSIZE][YDIM].Value*0.5f)-(CB_HLF_BRICK_LENGTH),
 					   CB_BRICK_Z_POS);
 
@@ -126,12 +126,12 @@ void CBunker:: Init(CBNK_BUNKER_TYPE T, Vector &Pos)
 					Brick[row][col].Activate();
 					Brick[row][col].Health = 1.0f;
 				}
-				Brick[row][col].MoveTo(BricksPosition);
-				BricksPosition.v[XDIM] += CB_BRICK_WIDTH;
+				Brick[row][col].MoveTo(BrickPosition);
+				BrickPosition.v[XDIM] += CB_BRICK_WIDTH;
 			}
 
-			BricksPosition.v[XDIM] = Pos.v[XDIM]-(CharAABB.AABB[CHAR_BBSIZE][XDIM].Value*0.5f)+(CB_BRICK_WIDTH*0.5f);
-			BricksPosition.v[YDIM] -= CB_BRICK_LENGTH;
+			BrickPosition.v[XDIM] = Pos.v[XDIM]-(CharAABB.AABB[CHAR_BBSIZE][XDIM].Value*0.5f)+(CB_BRICK_WIDTH*0.5f);
+			BrickPosition.v[YDIM] -= CB_BRICK_LENGTH;
 			delta--;
 		}
 		break;
@@ -142,12 +142,12 @@ void CBunker:: Init(CBNK_BUNKER_TYPE T, Vector &Pos)
 	}
 	
 #ifdef CHAR_USE_AABB
-	SetAABBInGlobalCoord(CB_BRICK_WIDTH*CBNK_MAX_COLUMNS, CB_BRICK_LENGTH*CBNK_MAX_LINES, CB_BRICK_HEIGHT);
+	CCharacter::UpdateAABB(CB_BRICK_WIDTH*CBNK_MAX_COLUMNS, CB_BRICK_LENGTH*CBNK_MAX_LINES, CB_BRICK_HEIGHT);
 #endif
 	//Move Bunker to its final position
-	MoveTo(Pos.v[XDIM],
-		Pos.v[YDIM],
-		Pos.v[ZDIM]);
+	Position.Set(Pos.v[XDIM],
+				 Pos.v[YDIM],
+				 Pos.v[ZDIM]);
 };
 
 void CBunker::Init(float x, float y, float z)
@@ -349,12 +349,21 @@ void CBunker::UpdateAABB()
 {
 	unsigned int file, col;
 
+	ResetAABB();
 	for (file=0;file<CBNK_MAX_LINES;file++)
 		for (col=0;col<CBNK_MAX_COLUMNS;col++)
 			if (Brick[file][col].Alive())
 				UpdateAABB(Brick[file][col]);
 	
-	CCharacter::UpdateAABB();
+	SetAABBSize(CharAABB.AABB[CHAR_BBMAX][XDIM].Value - CharAABB.AABB[CHAR_BBMIN][XDIM].Value,
+				CharAABB.AABB[CHAR_BBMAX][YDIM].Value - CharAABB.AABB[CHAR_BBMIN][YDIM].Value,
+				CharAABB.AABB[CHAR_BBMAX][ZDIM].Value - CharAABB.AABB[CHAR_BBMIN][ZDIM].Value);
+
+	CharAABB.AABB[CHAR_BBCENTER][XDIM].Value = CharAABB.AABB[CHAR_BBSIZE][XDIM].Value * 0.5f;
+	CharAABB.AABB[CHAR_BBCENTER][YDIM].Value = CharAABB.AABB[CHAR_BBSIZE][YDIM].Value * 0.5f;
+	CharAABB.AABB[CHAR_BBCENTER][ZDIM].Value = CharAABB.AABB[CHAR_BBSIZE][ZDIM].Value * 0.5f;
+
+	UpdateCollisionDetection();
 }
 
 ///Recalculates its AABB given a brick

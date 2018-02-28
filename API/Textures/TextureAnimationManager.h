@@ -6,7 +6,7 @@
 #ifndef TEXTUREANIMATIONMANAGER_H
 #define TEXTUREANIMATIONMANAGER_H
 
-#include"TextureAnimation.h"
+#include <TextureAnimation.h>
 #include <vector>
 
 class CTextureAnimationManager {

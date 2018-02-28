@@ -42,7 +42,10 @@
 #define CPL_3D_SIZE_Y			2.0f	//
 #define CPL_3D_SIZE_Z			0.5f	//
 
-#define CPL_LASER_REL_POS		0.05f	///<Left or right laser relative position respect to the palyer on the X axis
+#define CPL_LASER_XSHIFT		0.05f	///<Left or right laser relative position respect to the player on the X axis
+#define CPL_REACTOR_XSHIFT		0.23f	///<Left or right reactor relative position respect to the player on the X axis
+#define CPL_REACTOR_YSHIFT		0.30f	///<Left or right reactor relative position respect to the player on the Y axis
+#define CPL_REACTOR_ZSHIFT		0.0f	///<Left or right reactor relative position respect to the player on the Z axis
 
 //Shooting
 #define CPL_SHOOT2D_SPEED		0.006f	//In units per milisecond
@@ -50,6 +53,8 @@
 
 extern CShootsManager	*ShootsManager;
 extern CSIGame			*Game;
+CCharactersPool			*CharacterPool;
+
 
 bool CPlayer::Init ()	//Used when all the values are initialized by default
 						//when reading the global initialization game file. 
@@ -75,13 +80,19 @@ bool CPlayer::Init ()	//Used when all the values are initialized by default
 	Rotation.v[ZDIM] = 180.0;
 
 #ifdef CHAR_USE_AABB
-	SetAABBInGlobalCoord(CPL_2D_SIZE_X, CPL_2D_SIZE_Y, CPL_2D_SIZE_Z);
+	UpdateAABB(CPL_2D_SIZE_X, CPL_2D_SIZE_Y, CPL_2D_SIZE_Z);
 #endif
 
 	Speed.v[XDIM]			= 0.0f;
 	Acceleration.v[XDIM]	= 0.0f;
 
 	ShootType		= CSH_PLAYER2D;
+
+	for (int r = 0; r < CPL_MAX_REACTORS; r++)
+		Reactor[r] = (CReactor*) CharacterPool->get(CHARS_REACTOR, UGKOBJM_NO_SUBTYPE);
+	
+	for (int l = 0; l < CPL_MAX_LASERS; l++)
+		Laser[l] = (CLaser*) CharacterPool->get(CHARS_LASER, UGKOBJM_NO_SUBTYPE);
 
 	ActivateReactor();
 
@@ -119,8 +130,10 @@ void CPlayer::SetQTRoot(QuadtreeRoot *QTR)
 {
 	QTRoot = QTR;
 	for (int l = 0; l<CPL_MAX_LASERS; l++)
-		Laser[l].SetQTRoot(QTR);
-	Reactor.SetQTRoot(QTR);
+		Laser[l]->SetQTRoot(QTR);
+	
+	for (int r = 0; r<CPL_MAX_REACTORS; r++)
+		Reactor[r]->SetQTRoot(QTR);
 }
 #endif
 
@@ -132,8 +145,10 @@ void CPlayer::ResizeDirectory(unsigned int S)
 	CExplosiveChar::ResizeDirectory(S);
 
 	for (i = 0; i<CPL_MAX_LASERS; i++)
-		Laser[i].ResizeDirectory(S);
-	Reactor.ResizeDirectory(S);
+		Laser[i]->ResizeDirectory(S);
+
+	for (int r = 0; r<CPL_MAX_REACTORS; r++)
+		Reactor[r]->ResizeDirectory(S);
 }
 
 void CPlayer::SetGameRef(CCharacter *Game)
@@ -144,8 +159,9 @@ void CPlayer::SetGameRef(CCharacter *Game)
 	AssignTMG(Game);
 
 	for (i = 0; i<CPL_MAX_LASERS; i++)
-		Laser[i].AssignTMG(Game);
-	Reactor.AssignTMG(Game);
+		Laser[i]->AssignTMG(Game);
+	for (int r = 0; r<CPL_MAX_REACTORS; r++)
+		Reactor[r]->AssignTMG(Game);
 }
 
 /**
@@ -161,9 +177,13 @@ void CPlayer::SetLocalTimers()
 	
 	//Laser Timers
 	for (i = 0; i < CPL_MAX_LASERS; i++)
-		Laser[i].SetLocalTimers(CPL_MAX_TIMERS);
+		Laser[i]->SetLocalTimers(CPL_MAX_TIMERS);
+	
 	//Reactor timers
-	Reactor.SetLocalTimers(CPL_MAX_TIMERS);
+	for (int r = 0; r<CPL_MAX_REACTORS; r++)
+		Reactor[r]->SetLocalTimers(CPL_MAX_TIMERS);
+
+	SetRenderPeriod(Game->DefaultRndPeriod[CHARS_GAME]);
 }
 
 void CPlayer::AssignTextMngr(CCharacter * TM)
@@ -173,8 +193,10 @@ void CPlayer::AssignTextMngr(CCharacter * TM)
 	CExplosiveChar::AssignTextMngr(TM);
 
 	for (i = 0; i<CPL_MAX_LASERS; i++)
-		Laser[i].AssignTextMngr(TM);
-	Reactor.AssignTextMngr(TM);
+		Laser[i]->AssignTextMngr(TM);
+
+	for (int r = 0; r<CPL_MAX_REACTORS; r++)
+		Reactor[r]->AssignTextMngr(TM);
 }
 
 void CPlayer::Pass2D3D()
@@ -183,7 +205,7 @@ void CPlayer::Pass2D3D()
 	
 	Passing2D23D = true; 
 	for (i = 0; i < CPL_MAX_LASERS; i++) 
-		Laser[i].Passing2D23D = true;
+		Laser[i]->Passing2D23D = true;
 	//Reactor is always a particle system that does not need to pass from 2D to 3D. 
 }
 
@@ -200,12 +222,15 @@ void CPlayer::SetEndingCriteria(bool ByTime, bool ByFrame)
 
 	for (i = 0; i < CPL_MAX_LASERS; i++)
 	{
-		Laser[i].EndByTime = ByTime;
-		Laser[i].EndByFrame = ByFrame;
+		Laser[i]->EndByTime = ByTime;
+		Laser[i]->EndByFrame = ByFrame;
 	}
 
-	Reactor.EndByTime = ByTime;
-	Reactor.EndByFrame = ByFrame;
+	for (int r = 0; r < CPL_MAX_REACTORS; r++)
+	{
+		Reactor[r]->EndByTime = ByTime;
+		Reactor[r]->EndByFrame = ByFrame;
+	}
 }
 
 //AI
@@ -231,27 +256,37 @@ void CPlayer::AI_Die(void)	///Default Artificial Intelligence character initiali
 
 void CPlayer::ActivateReactor()
 {
-	Reactor.Activate();
-	Reactor.MoveTo(Position);
+	Vector ReactorShift;
+
+	for (int r = 0; r < CPL_MAX_REACTORS; r++)
+	{
+		Reactor[r]->Activate();
+		Reactor[r]->MoveTo(Position);
+	}
+
+	ReactorShift.Set(-CPL_REACTOR_XSHIFT, -CPL_REACTOR_YSHIFT, CPL_REACTOR_ZSHIFT);
+	Reactor[CPL_LEFT_REACTOR]->MoveRelTo(ReactorShift);
+	ReactorShift.Set(CPL_REACTOR_XSHIFT, -CPL_REACTOR_YSHIFT, CPL_REACTOR_ZSHIFT);
+	Reactor[CPL_RIGHT_REACTOR]->MoveRelTo(ReactorShift);		
 }
 
 void CPlayer::ActivateLaser(CPL_PLAYER_LASER LaserActivated)
 {
-	Laser[LaserActivated].Activate();
-	Laser[LaserActivated].Explosion.SetDefault();
+	Laser[LaserActivated]->Activate();
+	Laser[LaserActivated]->Explosion.SetDefault();
 	
 	if (CPL_LEFT_LASER == LaserActivated)
-		Laser[LaserActivated].Position.v[XDIM] = Position.v[XDIM] - CharAABB.AABB[CHAR_BBSIZE][XDIM].Value - CPL_LASER_REL_POS;
+		Laser[LaserActivated]->Position.v[XDIM] = Position.v[XDIM] - CharAABB.AABB[CHAR_BBSIZE][XDIM].Value - CPL_LASER_XSHIFT;
 	else 
-		Laser[LaserActivated].Position.v[XDIM] = Position.v[XDIM] + CharAABB.AABB[CHAR_BBSIZE][XDIM].Value + CPL_LASER_REL_POS;
+		Laser[LaserActivated]->Position.v[XDIM] = Position.v[XDIM] + CharAABB.AABB[CHAR_BBSIZE][XDIM].Value + CPL_LASER_XSHIFT;
 
-	Laser[LaserActivated].Position.v[YDIM] = Position.v[YDIM];
-	Laser[LaserActivated].Position.v[ZDIM] = Position.v[ZDIM];
+	Laser[LaserActivated]->Position.v[YDIM] = Position.v[YDIM];
+	Laser[LaserActivated]->Position.v[ZDIM] = Position.v[ZDIM];
 
-	Laser[LaserActivated].ShootType = CSH_AUX_LASER;
-	Laser[LaserActivated].Timer[CL_RND_PERIOD].SetAlarm(Timer[CPL_RND_PERIOD].GetAlarmPeriod());
+	Laser[LaserActivated]->ShootType = CSH_AUX_LASER;
+	Laser[LaserActivated]->Timer[CL_RND_PERIOD].SetAlarm(Timer[CPL_RND_PERIOD].GetAlarmPeriod());
 
-	Laser[LaserActivated].UpdateCollisionDetection();
+	Laser[LaserActivated]->UpdateCollisionDetection();
 }
 
 //Physics
@@ -303,8 +338,8 @@ if (Alive() && !Immortal)
 	if (Health <= 0)
 	{	//... and everything has to explode, if exists
 		for (i = 0; i < CPL_MAX_LASERS; i++)
-			if (Laser[i].Alive())
-				Laser[i].AI_Explode();
+			if (Laser[i]->Alive())
+				Laser[i]->AI_Explode();
 
 		Sound[CPL_EXPLOSION_SND]->Play(UGKSND_VOLUME_80);
 		Explosion.Init(Timer[CPL_RND_PERIOD].GetAlarmPeriodms());
@@ -324,7 +359,9 @@ void CPlayer::ChangeRenderMode(CHAR_RENDER_MODE Mode)
 
 	RenderMode = Mode;
 	Explosion.ChangeRenderMode	(Mode);
-	Reactor.ChangeRenderMode	(Mode);
+
+	for (int r = 0; r < CPL_MAX_REACTORS; r++)
+		Reactor[r]->ChangeRenderMode	(Mode);
 
 	switch(RenderMode)
 	{
@@ -337,11 +374,13 @@ void CPlayer::ChangeRenderMode(CHAR_RENDER_MODE Mode)
 
 		//No laser support when in 2D mode
 		for (l = 0; l<CPL_MAX_LASERS; l++){
-			Laser[l].SetDefault();
-			Laser[l].ChangeRenderMode(Mode);
+			Laser[l]->SetDefault();
+			Laser[l]->ChangeRenderMode(Mode);
 		}
 
-		Reactor.SetDefault();
+		for (int r = 0; r < CPL_MAX_REACTORS; r++)
+			Reactor[r]->SetDefault();
+
 		Rotation.v[XDIM] =	  0.0;
 		Rotation.v[YDIM] =    0.0;
 		Rotation.v[ZDIM] =    180.0;
@@ -372,15 +411,15 @@ void CPlayer::ChangeRenderMode(CHAR_RENDER_MODE Mode)
 		for (i = 0; i < CPL_MAX_LASERS; i++)
 		{
 
-			Laser[i].CharAABB.AABB[CHAR_BBSIZE][XDIM].Value = CharAABB.AABB[CHAR_BBSIZE][XDIM].Value / 3;
-			Laser[i].CharAABB.AABB[CHAR_BBSIZE][YDIM].Value = CharAABB.AABB[CHAR_BBSIZE][YDIM].Value;
+			Laser[i]->CharAABB.AABB[CHAR_BBSIZE][XDIM].Value = CharAABB.AABB[CHAR_BBSIZE][XDIM].Value / 3;
+			Laser[i]->CharAABB.AABB[CHAR_BBSIZE][YDIM].Value = CharAABB.AABB[CHAR_BBSIZE][YDIM].Value;
 #ifdef CHAR_USE_AABB
-			Laser[i].SetAABBInGlobalCoord();
+			Laser[i]->SetAABBInGlobalCoord();
 #endif
-			Laser[i].FitMeshIntoBoundingBox();
+			Laser[i]->FitMeshIntoBoundingBox();
 
-			Laser[i].ChangeRenderMode(Mode);
-			Laser[i].Passing2D23D = false;
+			Laser[i]->ChangeRenderMode(Mode);
+			Laser[i]->Passing2D23D = false;
 
 		}
 		ActivateReactor();
@@ -396,7 +435,6 @@ void CPlayer::ChangeRenderMode(CHAR_RENDER_MODE Mode)
 void CPlayer::Render(void)
 {
 	int l;
-	CLaser *laser;
 	GLboolean	Blending = glIsEnabled(GL_BLEND),
 				Alpha	 = glIsEnabled(GL_ALPHA_TEST);
 
@@ -453,10 +491,6 @@ void CPlayer::Render(void)
 		//Set the scale
 		Mesh->modelo.scale.v = Scale.v;
 
-		// Enabling Anti-aliasing
-		if (Antialiasing)
-			glEnable(GL_MULTISAMPLE_ARB);
-
 		// Player touched
 		if (Hit_duration < CPL_MAX_MAX_HIT_DUR)
 		{
@@ -468,30 +502,16 @@ void CPlayer::Render(void)
 		// Normal player drawing
 		Mesh->modelo.Draw();
 
-		laser = (CLaser*)Laser;
+		for (unsigned int i = 0; i < CPL_MAX_LASERS; i++)
+			Laser[i]->Render();
 
-		//Check for Laser explosions
-		for (l = 0; l<CPL_MAX_LASERS; l++)
-		{
-			if (Laser[l].Alive())
-				Laser[l].Render();
-			if (laser[l].Explosion.Alive())
-				laser[l].Explosion.Render();
-			else if (laser[l].Explosion.Active())
-				{
-					RTDESK_CMsg *Msg = GetMsgToFill(UMSG_MSG_BASIC_TYPE);
-					Laser[l].SendMsg(Msg, Directory[CHARS_GAME_REF], RTDESKT_INMEDIATELY);
-					laser[l].Explosion.Revive(); 
-					Laser[l].SetDefault();
-				}
-		}		
 		//In 2D, no reactor has to be rendered
-		if(CHAR_2D != RenderMode && Reactor.Active()) Reactor.Render();
-
-		// Disabling Anti-aliasing
-		if (Antialiasing)
-			glDisable(GL_MULTISAMPLE_ARB);
-
+		for (int r = 0; r < CPL_MAX_REACTORS; r++)
+			if (Reactor[r]->Active())
+			{
+				Reactor[r]->Rotation.Set(Mesh->modelo.rot.x, Mesh->modelo.rot.y, Mesh->modelo.rot.z);
+				Reactor[r]->Render();
+			}
 		break;
 	default:;
 	}
@@ -522,18 +542,26 @@ void CPlayer::MoveTo		(Vector &Move)				///Moving to an absolute position. It do
 
 	CCharacter::MoveTo(Move); 
 
-	if (Laser[CPL_LEFT_LASER].Active()) {
+	if (Laser[CPL_LEFT_LASER]->Active()) {
 		NewPos = Position;
-		NewPos.v[XDIM] += - CharAABB.AABB[CHAR_BBSIZE][XDIM].Value - CPL_LASER_REL_POS;
-		Laser[CPL_LEFT_LASER].MoveTo(NewPos);
+		NewPos.v[XDIM] += - CharAABB.AABB[CHAR_BBSIZE][XDIM].Value - CPL_LASER_XSHIFT;
+		Laser[CPL_LEFT_LASER]->MoveTo(NewPos);
 	}
 
-	if (Laser[CPL_RIGHT_LASER].Active()) {
+	if (Laser[CPL_RIGHT_LASER]->Active()) {
 		NewPos = Position;
-		NewPos.v[XDIM] += CharAABB.AABB[CHAR_BBSIZE][XDIM].Value + CPL_LASER_REL_POS;
-		Laser[CPL_RIGHT_LASER].MoveTo(NewPos);
+		NewPos.v[XDIM] += CharAABB.AABB[CHAR_BBSIZE][XDIM].Value + CPL_LASER_XSHIFT;
+		Laser[CPL_RIGHT_LASER]->MoveTo(NewPos);
 	}
-	Reactor.MoveTo(Position);
+
+	for (int r = 0; r < CPL_MAX_REACTORS; r++)
+		Reactor[r]->MoveTo(Position);
+
+	//Relative positions of every reactor
+	NewPos.Set(-CPL_REACTOR_XSHIFT, -CPL_REACTOR_YSHIFT, CPL_REACTOR_ZSHIFT);
+	Reactor[CPL_LEFT_REACTOR]->MoveRelTo(NewPos);
+	NewPos.Set(CPL_REACTOR_XSHIFT, -CPL_REACTOR_YSHIFT, CPL_REACTOR_ZSHIFT);
+	Reactor[CPL_RIGHT_REACTOR]->MoveRelTo(NewPos);
 }
 
 void CPlayer::MoveRelTo	(float x, float y, float z)	///Moves x,y,z units from the to the current position
@@ -641,8 +669,8 @@ void CPlayer::Update(void)
 
 		//Check for Laser explosions
 		for (l = 0; l<CPL_MAX_LASERS; l++)
-			if (Laser[l].Explosion.Active())
-				Laser[l].Explosion.Update();
+			if (Laser[l]->Explosion.Active())
+				Laser[l]->Explosion.Update();
 
 #ifndef XM_CONTINUOUS_WITH_SIMULATE_TIME
 		LastUpdTime = nowTime;
@@ -831,11 +859,11 @@ void CPlayer::UserShoot	()
 
 		//Generate a new shoot for every laser available
 		for(unsigned int i = 0; i < CPL_MAX_LASERS;i++)
-			if (Laser[i].Active())
+			if (Laser[i]->Active())
 			{
 				S.v[XDIM] = S.v[ZDIM] = 0.0f;
 				S.v[YDIM] = CPL_SHOOT3D_SPEED;
-				ShootsManager->NewShoot(LaserShootType, Laser[i].Position, S);
+				ShootsManager->NewShoot(LaserShootType, Laser[i]->Position, S);
 			}
 	}
 }
@@ -847,10 +875,18 @@ void CPlayer::SetRenderPeriod(HRT_Timems RP)
 	Timer[CPL_RND_PERIOD].SetAlarm(RP);
 	Timer[CPL_RND_PERIOD].Activate();
 
-	Reactor.Timer[CPL_RND_PERIOD].SetAlarm(RP);
-	Reactor.Timer[CPL_RND_PERIOD].Activate();
+
+	for (int r = 0; r < CPL_MAX_REACTORS; r++)
+	{
+		Reactor[r]->Timer[CPL_RND_PERIOD].SetAlarm(RP);
+		Reactor[r]->Timer[CPL_RND_PERIOD].Activate();
+	}
+
 	for (i = 0; i < CPL_MAX_LASERS; i++)
-		Laser[i].Timer[CPL_RND_PERIOD].SetAlarm(RP);
+	{
+		Laser[i]->Timer[CPL_RND_PERIOD].SetAlarm(RP);
+		Laser[i]->Timer[CPL_RND_PERIOD].Activate();
+	}
 }
 
 void CPlayer::SetUpdatePeriod(HRT_Timems UP)
@@ -858,7 +894,9 @@ void CPlayer::SetUpdatePeriod(HRT_Timems UP)
 	unsigned int i;
 
 	Timer[CPL_UPD_PERIOD].SetAlarm(UP);
-	Reactor.Timer[CPL_UPD_PERIOD].SetAlarm(UP);
+	for (int r = 0; r < CPL_MAX_REACTORS; r++)
+		Reactor[r]->Timer[CPL_UPD_PERIOD].SetAlarm(UP);
+
 	for (i = 0; i < CPL_MAX_LASERS; i++)
-		Laser[i].Timer[CPL_UPD_PERIOD].SetAlarm(UP);
+		Laser[i]->Timer[CPL_UPD_PERIOD].SetAlarm(UP);
 }

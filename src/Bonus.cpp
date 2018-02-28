@@ -9,7 +9,7 @@
 */
 
 #include <SITexturesResources.h>
-#include <TexturesManager.h>
+#include <UGKTexturesManager.h>
 #include <GameSounds.h>
 #include <GameCharacters.h>
 #include <BonusManager.h>
@@ -28,10 +28,6 @@
 CBonus::CBonus()
 {
 	Mesh = NULL;
-	//Since Bonus PhysicMode is UGKPHY_PHYSICAL... it has to initialize its AABB
-#ifdef CHAR_USE_AABB
-	InitializeAABB();
-#endif
 
 	Init();
 
@@ -50,12 +46,9 @@ void CBonus::Init()
 	SetDefault();
 
 	//Initial position
-	Position.v[XDIM] = float (rand()%10) - 5.0f;
-	Position.v[YDIM] = CBN_YPOS;
-	Position.v[ZDIM] = CBN_ZPOS;
-
-	//Initial size
-	SetAABBInGlobalCoord(CBN_WIDTH_2D, CBN_HEIGTH_2D, CBN_LENGTH_2D);
+	Position.Set	(float (rand()%10) - 5.0f, CBN_YPOS, CBN_ZPOS);
+	Rotation.Set	(180.0f, 0.0f, 0.0f);
+	ResetScale		();
 
 	//Speed is reset in the CCharacter class constructor
 	Speed.v[YDIM] = -0.003f;	//Units per milisecond
@@ -78,10 +71,21 @@ void CBonus::Render(void)
 	GLboolean	Blending = glIsEnabled(GL_BLEND),
 				AlphaT	 = glIsEnabled(GL_ALPHA_TEST);
 
+	unsigned int Texture;
+
 	if (!Blending)	glEnable(GL_BLEND);
 	if (!AlphaT)	glEnable(GL_ALPHA_TEST);									// for TGA alpha test
 
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glDisable(GL_LIGHTING);			//Activate lights on
+									//Disable the players lighting
+	//glEnable(SIGLB_PLAYER_LIGHT);
+	//Enable the navy ships lighting
+	//glEnable(SIGLB_SHIP_LIGHT);
+	
+	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+
+	glColor4f(0.5f, 1.0f, 0.6f, Alpha);
 
 	switch(RenderMode)
 	{
@@ -95,8 +99,7 @@ void CBonus::Render(void)
 			SetDefault();
 			return;
 		}
-
-		TextMngr->Textures[CTM_POWERUP]->SetTexture();
+		Texture = CTM_POWERUP;
 		break;
 	case CHAR_LINES3D:
 		//Nothing to do at this version
@@ -110,10 +113,10 @@ void CBonus::Render(void)
 			SetDefault();
 			return;
 		case CBN_BONUS_LASER:
-			TextMngr->Textures[CTM_TEXT_BONUS]->SetTexture();
+			Texture = CTM_TEXT_BONUS;
 			break;
 		case CBN_BONUS_WEAPON:
-			TextMngr->Textures[CTM_TEXT_WEAPON]->SetTexture();
+			Texture = CTM_TEXT_WEAPON;
 		}
 
 		//Fading in and out of the Bonus
@@ -123,11 +126,11 @@ void CBonus::Render(void)
 		else if (Alpha >= CBN_MAX_ALPHA)
 			if (FadingSpeed >=0 ) FadingSpeed = -FadingSpeed;
 
-		glColor4f (1.0f, 1.0f, 1.0f, Alpha);
 		break;
 	default: return;
 	}
-
+	glColor4f(0.5f, 1.0f, 0.6f, Alpha);
+	TextMngr->Textures[Texture]->SetTexture();
 	Render2D();
 
 	if (!Blending)	glDisable(GL_BLEND);
@@ -166,7 +169,7 @@ void CBonus::Update (void)	///What the character has to do on every time tick
 		DeltaPos = Speed * msUpdMsg;
 		MoveRelTo(DeltaPos);// Move On The X Axis By X Speed
 
-		if (Position.v[YDIM] < Bottom)						//Out of game playground
+		if (Position.v[YDIM] < 	SIGLBD_PG_BOTTOM)						//Out of game playground
 			AI_Die();
 
 		#ifdef CHAR_USE_AABB
@@ -193,7 +196,7 @@ void CBonus::DiscreteUpdate (void)	///What the character has to do on every time
 	DeltaPos = Speed * msUpdMsg;
 	MoveRelTo(DeltaPos);// Move On The X Axis By X Speed
 
-	if (Position.v[YDIM] < Bottom)						//Out of game playground
+	if (Position.v[YDIM] < SIGLBD_PG_BOTTOM)						//Out of game playground
 		AI_Die();
 
 	#ifdef XM_UPD_TIME_DISC
@@ -235,7 +238,7 @@ void CBonus::PlayerCollided ()
 	if (Alive() && !Explosion.Alive())
 		AI_Explode();
 	RTDESK_CMsg *Msg = GetMsgToFill(UMSG_MSG_BASIC_TYPE);
-	SendMsg(Msg, Game, RTDESKT_INMEDIATELY);
+	SendMsg(Msg, Directory[CHARS_GAME_REF], RTDESKT_INMEDIATELY);
 
 	//Make sound
 	switch(SubType)

@@ -24,6 +24,8 @@ public:
 	float			FadingSpeed;					/// Average particle Fading speed
 	float			InitialParticleSpeed;			/// Average speed a particle flows away from the particle system mass center
 
+	vector<CParticle*> active_part; ///< Active particles in the system
+
 	//Methods
 	void Init ();
 

@@ -9,7 +9,7 @@
 
 #pragma once;
 
-#include "UGKParticle.h"
+#include <UGKParticle.h>
 
 /**
  * @class	UGKParticleEmitter

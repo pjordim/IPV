@@ -134,8 +134,9 @@ public:
 	CHAR_RENDER_MODE	NextRenderMode;
 
 	//Presentation attributes
-	bool			Text_2D;							// 2D TEXT AFFICHE ?
-	bool			Spectrum;							// SPECTRUM (BEAT DETECTION)?
+	bool			Text_2D;			// 2D TEXT AFFICHE ?
+	bool			Spectrum;			// SPECTRUM (BEAT DETECTION)?
+	bool			Antialiasing;		///< Using antialiasing for rendering the GUI gadgets
 
 	bool			BouncingMode;
 	bool			Paused;

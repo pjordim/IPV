@@ -35,6 +35,15 @@ typedef enum {
 	CPL_MAX_LASERS					///<Amount of extra lasers the player has
 } CPL_PLAYER_LASER;
 
+/** \typedef CPL_PLAYER_REACTOR
+*	Reactors managed by any player
+*/
+typedef enum {
+	CPL_LEFT_REACTOR,				///<Code for left reactor
+	CPL_RIGHT_REACTOR,				///<Code for right reactor
+	CPL_MAX_REACTORS				///<Amount of extra reactors the player has
+} CPL_PLAYER_REACTOR;
+
 typedef enum {
 	CPL_MOVE_LEFT,			///<The player wants to move to the left
 	CPL_MOVE_RIGHT,			///<The player wants to move to the right
@@ -83,7 +92,6 @@ public:
 
 	CPL_PLAYER_STATE State;
 	bool			Passing2D23D,	///< Flag that prevents any destruction of the player, lasers,... while moving from 2D rendering mode to 3D one
-					Antialiasing,	///< Warn the player to draw its mesh using antialiasing
 					DiscreteSimulation;
 	float			Direction;		//-1.0 to the left and +1.0 to the right
 
@@ -92,8 +100,8 @@ public:
 	RTDESK_CMsg *msg;				///<RTDESK Message
 
 	//Weapons
-	CLaser		Laser[CPL_MAX_LASERS];	///<Extra lasers a player can have in a given moment
-	CReactor	Reactor;				///<Reactors the player's ship have to perform the movement
+	CLaser*		Laser	[CPL_MAX_LASERS];	///<Extra lasers a player can have in a given moment
+	CReactor*	Reactor	[CPL_MAX_REACTORS];	///<Reactors the player's ship have to perform the movement
 
 	//Methods
 	bool Init ();	//Used when all the values are initialized by default

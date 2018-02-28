@@ -98,7 +98,7 @@ void CCircleShip::Init()
 	Speed.v[XDIM]		=	0.002f;	//Units/ms
 
 #ifdef CHAR_USE_AABB
-	SetAABBInGlobalCoord(CCS_XSIZE3D, CCS_YSIZE3D, CCS_ZSIZE);
+	UpdateAABB(CCS_XSIZE3D, CCS_YSIZE3D, CCS_ZSIZE);			///Update by default the AABB relative to local coordinates
 #endif
 
 	Radius=2.0f;
@@ -109,6 +109,7 @@ void CCircleShip::Init()
 	Velocity=0.01;
 	ChgDir = false;
 	UpdateSF(TimerManager.GetSF());
+	ResetTransformations();
 }
 
 void CCircleShip::AI_Healthing()
@@ -285,10 +286,7 @@ void CCircleShip::Render()
 		glEnable(GL_CULL_FACE);		// Back face culling set on
 		glFrontFace(GL_CCW);		// The faces are defined counter clock wise
 		glEnable(GL_DEPTH_TEST);	// Occlusion culling set on
-
-		if (Navy->Antialiasing) // Anti-aliasing
-			glEnable(GL_MULTISAMPLE_ARB);
-		
+	
 		glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
 		Mesh->modelo.pos.v = Position.v;
 		Mesh->modelo.rot.v = Rotation.v;
@@ -308,9 +306,6 @@ void CCircleShip::Render()
 		// SupplyShip normal
 		else
 			Mesh->modelo.Draw();
-
-		if (Navy->Antialiasing) // Anti-aliasing
-			glDisable(GL_MULTISAMPLE_ARB);
 
 		break;
 	default: return;

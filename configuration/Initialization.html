@@ -31,25 +31,6 @@
 		    <Z>0.0</Z>
 	    </SPEED>
 	</CHARACTER>
-    <!-- Boss Basico con esescudo cada 10 y 125 de vida -->
-    <CHARACTER>
-        <NAME>BOSS</NAME>              <!-- Now is used the same character to all lasers -->
-        <EXPLOSION>1000</EXPLOSION>	    <!-- Miliseconds this explosion lasts -->
-        <HEALTH>2000</HEALTH>
-        <MESH>boss.3ds</MESH>
-        <SHIELD>125</SHIELD>
-        <TIMESHIELD>10000</TIMESHIELD>
-    </CHARACTER>    
-    <!-- Boss cabreado con esescudo cada 5 y 250 de vida -->
-    <CHARACTER>
-        <NAME>OVERBOSS</NAME>              <!-- Now is used the same character to all lasers -->
-        <EXPLOSION>1000</EXPLOSION>	    <!-- Miliseconds this explosion lasts -->
-        <HEALTH>2000</HEALTH>
-        <MESH>overboss.3ds</MESH>
-        <SHIELD>250</SHIELD>
-        <TIMESHIELD>5000</TIMESHIELD>
-        <TEXTURE3D>overboss.bmp</TEXTURE3D>
-    </CHARACTER>
 
     <CHARACTER>
 		<NAME>LASER</NAME>              <!-- Now is used the same character to all lasers -->
@@ -164,9 +145,6 @@
             <COLLIDED>SHOOT</COLLIDED>
             <COLLIDED>SHIP</COLLIDED>
             <COLLIDED>SUPPLYSHIP</COLLIDED>
-            <!--IPV-->
-            <COLLIDED>BOSS</COLLIDED>
-            <COLLIDED>OVERBOSS</COLLIDED>
         </COLLISION>
 
         <COLLISION>
@@ -178,9 +156,6 @@
             <COLLIDED>SHOOT</COLLIDED>
             <COLLIDED>SHIP</COLLIDED>
             <COLLIDED>SUPPLYSHIP</COLLIDED>
-            <!--IPV-->
-            <COLLIDED>BOSS</COLLIDED>
-            <COLLIDED>OVERBOSS</COLLIDED>
         </COLLISION>
         
         <COLLISION>
@@ -204,27 +179,6 @@
             <COLLIDED>SHIP</COLLIDED>
             <COLLIDED>SHOOT</COLLIDED>
             <COLLIDED>SUPPLYSHIP</COLLIDED>
-            <!--IPV-->
-            <COLLIDED>BOSS</COLLIDED>
-            <COLLIDED>OVERBOSS</COLLIDED>
-        </COLLISION>
-
-        <!--IPV-->
-        <COLLISION>
-            <CHARACTER>BOSS</CHARACTER>
-            <COLLIDED>BRICK</COLLIDED>
-            <COLLIDED>BUNKER</COLLIDED>
-            <COLLIDED>SHIP</COLLIDED>
-            <COLLIDED>SHOOT</COLLIDED>
-        </COLLISION>
-
-        <!--IPV-->
-        <COLLISION>
-            <CHARACTER>OVERBOSS</CHARACTER>
-            <COLLIDED>BRICK</COLLIDED>
-            <COLLIDED>BUNKER</COLLIDED>
-            <COLLIDED>SHIP</COLLIDED>
-            <COLLIDED>SHOOT</COLLIDED>
         </COLLISION>
 
         <COLLISION>
@@ -236,9 +190,6 @@
             <COLLIDED>SHIP</COLLIDED>
             <COLLIDED>SHOOT</COLLIDED>
             <COLLIDED>SUPPLYSHIP</COLLIDED>
-            <!--IPV-->
-            <COLLIDED>BOSS</COLLIDED>
-            <COLLIDED>OVERBOSS</COLLIDED>
         </COLLISION>
 
         <COLLISION>
@@ -262,9 +213,6 @@
             <COLLIDED>REACTOR</COLLIDED>
             <COLLIDED>SHIP</COLLIDED>
             <COLLIDED>SUPPLYSHIP</COLLIDED>
-            <!--IPV-->
-            <COLLIDED>BOSS</COLLIDED>
-            <COLLIDED>OVERBOSS</COLLIDED>
         </COLLISION>
         
         <COLLISION>

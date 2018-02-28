@@ -43,12 +43,12 @@ void CExplosion::Init(CCharacter *C, HRT_Timems RP)
 */
 void CExplosion::Init(HRT_Timems RP)
 {
-	Revive();
+	SetDefault();
 	Health		= -1.0f;
 	PhysicMode	= UGKPHY_LIGHT;	//Visible but not touchable
-	Timer.resize(UGKP_MAX_TIMERS);
+	Timer.resize(CP_MAX_TIMERS);
 	UpdateSF(TimerManager.GetSF());
-	Timer[UGKP_RND_PERIOD].SetAlarm(RP);
+	Timer[CP_RND_PERIOD].SetAlarm(RP);
 
 	///No AABB initialization is required since explosions do not have to collide to anything. They are a consequence of a character collision
 }
@@ -85,7 +85,7 @@ void CExplosion::Update(void)
 			if (active_part[loop]->Health > 0.0f)
 			{
 				Revive();
-				RenderPeriod = Timer[UGKP_RND_PERIOD].GetAlarmPeriodms();
+				RenderPeriod = Timer[CP_RND_PERIOD].GetAlarmPeriodms();
 				V = 0.004*0.075*RenderPeriod;
 				// Move the particles
 				DeltaPos = active_part[loop]->Speed * V;

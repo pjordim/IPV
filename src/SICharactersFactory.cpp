@@ -8,6 +8,7 @@
 
 #include <SICharactersFactory.h>
 
+#include <Background.h>
 #include <Bonus.h>
 #include <Brick.h>
 #include <Bunker.h>
@@ -45,6 +46,8 @@ CCharacter* CSICharactersFactory::createNewCharacter(int Type, int subType)
 
 	switch (Type)
 	{
+	case CHARS_BACKGROUND:			CAux = new CBackground();
+		break;
 	case  CHARS_BONUS:				CAux = new CBonus();
 		break;
 	case  CHARS_BONUS_MNGR:			CAux = new CBonusManager();
@@ -57,11 +60,11 @@ CCharacter* CSICharactersFactory::createNewCharacter(int Type, int subType)
 		break;
 	case  CHARS_GAME:				CAux = new CSIGame();
 		break;
+	case  CHARS_GUI_GADGET:			CAux = new CGUIGadget();
+		break;
 	case  CHARS_LASER:				CAux = new CLaser();
 		break;
 	case  CHARS_NAVY:				CAux = new CNavy();
-		break;
-	case  CHARS_BACKGROUND:			CAux = new CCharacter();
 		break;
 	case  CHARS_PLAYER:				CAux = new CPlayer();
 		break;
@@ -86,13 +89,14 @@ CCharacter* CSICharactersFactory::createNewCharacter(int Type, int subType)
 
 #ifdef CHAR_USE_QUADTREE
 	CAux->SetQTRoot(QTRoot);
+	CAux->SetAABBInGlobalCoord();
 #elif CHAR_USE_AABB
 #endif
 
 	CAux->SetMsgDispatcher(RTDESK_Engine->GetMsgDispatcher());
 	CAux->Directory.resize(CHARS_MAX_REFERENCES);
-	CAux->Directory[CHARS_GAME_REF] = Game;	//Neccesary to send back a msg to the main game singleton indicating that the player life is lost
-	CAux->Directory[CHARS_TEXTURES_MNGR_REF] = &TexturesManager;	//Neccesary to access the textures used for every character to be rendered
+	CAux->Directory[CHARS_GAME_REF]			 = Game;			//Neccesary to send back a msg to the main game singleton indicating that the player life is lost
+	CAux->Directory[CHARS_TEXTURES_MNGR_REF] = (CCharacter*) &TexturesManager;//Neccesary to access the textures used for every character to be rendered
 	
 	CAux->SubType = subType;
 

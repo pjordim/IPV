@@ -11,7 +11,7 @@ Definition of the class S.I. Characters Factory
 #ifndef CSIF_CHARACTER_FACTORY
 #define CSIF_CHARACTER_FACTORY
 
-#include <UGKCharactersPool.h>
+#include <UGKCharactersFactory.h>
 #include <GameCharacters.h>
 
 using namespace UGK;

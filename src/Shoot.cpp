@@ -60,10 +60,8 @@ void CShoot::Init (void)
 	InitTransforms(CHAR_2D);
 
 #ifdef CHAR_USE_AABB
-	SetAABBInGlobalCoord(CSH__XSIZE, CSH__YSIZE, CSH__ZSIZE);
+	UpdateAABB(CSH__XSIZE, CSH__YSIZE, CSH__ZSIZE);
 #endif
-
-	MoveTo(Position);
 
 	SetLocalTimers(CSH_MAX_TIMERS);
 

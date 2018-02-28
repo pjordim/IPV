@@ -31,10 +31,11 @@ class CReactor: public CExplosiveChar
 	//Attributes
 	float	alpha;
 	bool	alpha_down;
-	float	ln,			// particules externes des lasers + grandes pour le mode 3D_LINES
-			ln2;		// particules internes des réacteurs + petites pour le mode *non* 3D_LINES
+	float	Size;
 
 public:
+	UGK::Vector	Shift;	
+
 	//Methods
 	CReactor();		//Constructor
 
