@@ -255,6 +255,12 @@
     <ClInclude Include="API\Particles\ParticleSystem.h">
       <Filter>Header Files\API\Particles</Filter>
     </ClInclude>
+    <ClInclude Include="Boss.h">
+      <Filter>Header Files\Space Invaders\Characters</Filter>
+    </ClInclude>
+    <ClInclude Include="Overboss.h">
+      <Filter>Header Files\Space Invaders\Characters</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="API\Particles\Explosion.cpp">
@@ -415,6 +421,12 @@
     </ClCompile>
     <ClCompile Include="API\Particles\ParticleSystem.cpp">
       <Filter>Source Files\API\Particles</Filter>
+    </ClCompile>
+    <ClCompile Include="Boss.cpp">
+      <Filter>Source Files\Space Invaders\Characters</Filter>
+    </ClCompile>
+    <ClCompile Include="Overboss.cpp">
+      <Filter>Source Files\Space Invaders\Characters</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -174,7 +174,7 @@ End tag: HEALTH
 Text: 
         
 Start tag: MESH
-Text: boss.3ds
+Text: Boss.3ds
 End tag: MESH
 Text: 
         
@@ -221,7 +221,7 @@ End tag: HEALTH
 Text: 
         
 Start tag: MESH
-Text: overboss.3ds
+Text: Overboss.3ds
 End tag: MESH
 Text: 
         

@@ -14,7 +14,7 @@
     <ProjectGuid>{C02445C9-F25D-4263-B4B9-B0A5F05B9AE5}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>SI_2013</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.10586.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
     <ProjectName>SI</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -158,6 +158,7 @@
     <ClInclude Include="API\Text2D3D\TextoGL.h" />
     <ClInclude Include="API\Textures\TextureAnimation.h" />
     <ClInclude Include="API\Textures\TextureAnimationManager.h" />
+    <ClInclude Include="Boss.h" />
     <ClInclude Include="include\Background.h" />
     <ClInclude Include="include\Bonus.h" />
     <ClInclude Include="include\BonusManager.h" />
@@ -194,6 +195,7 @@
     <ClInclude Include="include\Utilities.h" />
     <ClInclude Include="lib\OpenGL\glTexFont.h" />
     <ClInclude Include="Main_SI_2013.h" />
+    <ClInclude Include="Overboss.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
@@ -213,6 +215,7 @@
     <ClCompile Include="API\Text2D3D\TextoGL.cpp" />
     <ClCompile Include="API\Textures\TextureAnimation.cpp" />
     <ClCompile Include="API\Textures\TextureAnimationManager.cpp" />
+    <ClCompile Include="Boss.cpp" />
     <ClCompile Include="lib\HRT\HRTimer.cpp" />
     <ClCompile Include="lib\HRT\HRTimerManager.cpp" />
     <ClCompile Include="lib\HRT\HRTimerStat.cpp" />
@@ -220,6 +223,7 @@
     <ClCompile Include="lib\LiteHTML\LiteHTMLEntityResolver.cpp" />
     <ClCompile Include="lib\LiteHTML\LiteHTMLReader.cpp" />
     <ClCompile Include="lib\OpenGL\glTexFont.cpp" />
+    <ClCompile Include="Overboss.cpp" />
     <ClCompile Include="src\Background.cpp" />
     <ClCompile Include="src\Bonus.cpp" />
     <ClCompile Include="src\BonusManager.cpp" />

@@ -108,247 +108,89 @@ Text:
     
 End tag: CHARACTER
 Text: 
-
+    
     
 Start tag: CHARACTER
 Text: 
         
 Start tag: NAME
-Text: CIRCLESHIP
+Text: BOSS
 End tag: NAME
-Text: 
-        
-Start tag: VELOCITY
-Text: 0.001
-End tag: VELOCITY
-Text: 
-		
-Start tag: RADIO
-Text: 1
-End tag: RADIO
-Text: 
-        
-Start tag: CENTER
-Text:  
-		    
-Start tag: X
-Text: 3.0
-End tag: X
-Text: 
-	    
-End tag: CENTER
-Text: 
-    
-End tag: CHARACTER
-Text: 
-
-    
-Start tag: CHARACTER
-Text: 
-        
-Start tag: NAME
-Text: CIRCLESHIP
-End tag: NAME
-Text: 
-        
-Start tag: VELOCITY
-Text: 0.001
-End tag: VELOCITY
-Text: 
-		
-Start tag: RADIO
-Text: 1
-End tag: RADIO
-Text: 
-        
-Start tag: CENTER
-Text:  
-		    
-Start tag: X
-Text: -3.0
-End tag: X
-Text: 
-	    
-End tag: CENTER
-Text: 
-    
-End tag: CHARACTER
-Text: 
-
-    
-Start tag: CHARACTER
-Text: 
-        
-Start tag: NAME
-Text: SUPPLYSHIP
-End tag: NAME
-Text: 
-        
-Start tag: SPEED
-Text:  
-		    
-Start tag: X
-Text: 0.001
-End tag: X
-Text: 	
-Comments: 
-Text: d-->
-		    
-Start tag: Y
-Text: 0.0
-End tag: Y
-Text: 
-		    
-Start tag: Z
-Text: 0.0
-End tag: Z
-Text: 
-		
-End tag: SPEED
-Text: 
-    
-End tag: CHARACTER
-Text: 
-
-    
-Start tag: CHARACTER
-Text: 
-        
-Start tag: NAME
-Text: SUPPLYSHIP
-End tag: NAME
-Text: 
-        
-Start tag: SPEED
-Text:  
-		    
-Start tag: X
-Text: 0.005
-End tag: X
-Text: 	
-Comments: 
-Text: d-->
-		    
-Start tag: Y
-Text: 0.0
-End tag: Y
-Text: 
-		    
-Start tag: Z
-Text: 0.0
-End tag: Z
-Text: 
-		
-End tag: SPEED
-Text: 
-    
-End tag: CHARACTER
-Text: 
-
-    
-Start tag: CHARACTER
-Text: 
-        
-Start tag: NAME
-Text: NAVY
-End tag: NAME
-Text: 
-		
-Start tag: MOVEDOWN
-Text: 1
-End tag: MOVEDOWN
-Text: 				
-Comments: 
-Text: d-->
-		
-Start tag: SHOOTS
-Text: 1
-End tag: SHOOTS
-Text: 					
-Comments: 
-Text: )-->
-        
-Start tag: NUMLINES
-Text: 5
-End tag: NUMLINES
-Text: 
-        
-Start tag: FROM
-Text:                               
-Comments: 
-Text: r-->
-            
-Start tag: X
-Text: -5.0
-End tag: X
-Text: 
-            
-Start tag: Y
-Text:  0.0
-End tag: Y
-Text: 
-            
-Start tag: Z
-Text:  0.0
-End tag: Z
-Text: 
-        
-End tag: FROM
-Text: 
-        
-Start tag: LINE
-Text: 111111111111111
-End tag: LINE
-Text:              
+Text:               
 Comments: 
 Text:  -->
         
-Start tag: LINE
-Text: 222222222222222
-End tag: LINE
+Start tag: HEALTH
+Text: 2000
+End tag: HEALTH
 Text: 
         
-Start tag: LINE
-Text: 222222222222222
-End tag: LINE
+Start tag: MESH
+Text: Boss.3ds
+End tag: MESH
 Text: 
         
-Start tag: LINE
-Text: 333333333333333
-End tag: LINE
+Start tag: SPRITEINI
+Level parser error: Token SPRITEINI not allowed in a CHARACTER group.
+Text: sp1<\SPRITEINI>
+        
+Start tag: SPRITEMID
+Level parser error: Token SPRITEMID not allowed in a CHARACTER group.
+Text: sp2<\SPRITEMID>
+        
+Start tag: SPRITEFIN
+Level parser error: Token SPRITEFIN not allowed in a CHARACTER group.
+Text: sp3<\SPRITEFIN>
+        
+Start tag: SHIELD
+Level parser error: Token SHIELD not allowed in a CHARACTER group.
+Text: 125
+End tag: SHIELD
+Level parser error: SHIELD clossing tag without correspondent opening tag in a GEOMETRY
 Text: 
         
-Start tag: LINE
-Text: 444444444444444
-End tag: LINE
+Start tag: TIMESHIELD
+Level parser error: Token TIMESHIELD not allowed in a CHARACTER group.
+Text: 10000
+End tag: TIMESHIELD
+Level parser error: TIMESHIELD clossing tag without correspondent opening tag in a GEOMETRY
 Text: 
-        
-Start tag: SPEED
+    
+End tag: CHARACTER
 Text:  
-		    
-Start tag: X
-Text: 0.001
-End tag: X
-Text: 	
-Comments: 
-Text: p-->
-		    
-Start tag: Y
-Text: 0.0
-End tag: Y
+    
+    
+Start tag: CHARACTER
 Text: 
-		    
-Start tag: Z
-Text: 0.0
-End tag: Z
+        
+Start tag: NAME
+Text: PLAYER
+End tag: NAME
 Text: 
-		
-End tag: SPEED
+        
+Start tag: HEALTH
+Text: 20
+End tag: HEALTH
+Text: 
+        
+Start tag: EXPLOSION
+Text: 500
+End tag: EXPLOSION
+Text: 
+        
+Start tag: LIVES
+Text: 3
+End tag: LIVES
+Text: 
+        
+Start tag: MESH
+Text: player.3ds
+End tag: MESH
 Text: 
     
 End tag: CHARACTER
 Text: 
-
+    
     
 Start tag: CHARACTER
 Text: 
@@ -400,17 +242,12 @@ Comments:
 Text: e-->
         
 Start tag: LINE
-Text: 00011111111000
+Text: 11111111111111
 End tag: LINE
 Text: 
         
 Start tag: LINE
-Text: 00111111111100
-End tag: LINE
-Text: 
-        
-Start tag: LINE
-Text: 01111111111110
+Text: 00000000000000
 End tag: LINE
 Text: 
         
@@ -420,22 +257,27 @@ End tag: LINE
 Text: 
         
 Start tag: LINE
+Text: 00000000000000
+End tag: LINE
+Text: 
+        
+Start tag: LINE
 Text: 11111111111111
 End tag: LINE
 Text: 
         
 Start tag: LINE
-Text: 11111000011111
+Text: 00000000000000
 End tag: LINE
 Text: 
         
 Start tag: LINE
-Text: 11110000001111
+Text: 11111111111111
 End tag: LINE
 Text: 
         
 Start tag: LINE
-Text: 11100000000111
+Text: 00000000000000
 End tag: LINE
 Text: 
     
@@ -492,12 +334,12 @@ Comments:
 Text: e-->
         
 Start tag: LINE
-Text: 00111111111100
+Text: 11111111111111
 End tag: LINE
 Text: 
         
 Start tag: LINE
-Text: 01111111111110
+Text: 00000000000000
 End tag: LINE
 Text: 
         
@@ -507,7 +349,7 @@ End tag: LINE
 Text: 
         
 Start tag: LINE
-Text: 11111111111111
+Text: 00000000000000
 End tag: LINE
 Text: 
         
@@ -517,17 +359,17 @@ End tag: LINE
 Text: 
         
 Start tag: LINE
-Text: 11111000011111
+Text: 00000000000000
 End tag: LINE
 Text: 
         
 Start tag: LINE
-Text: 11110000001111
+Text: 11111111111111
 End tag: LINE
 Text: 
         
 Start tag: LINE
-Text: 11100000000111
+Text: 00000000000000
 End tag: LINE
 Text: 
     
@@ -584,12 +426,12 @@ Comments:
 Text: e-->
         
 Start tag: LINE
-Text: 00111111111100
+Text: 11111111111111
 End tag: LINE
 Text: 
         
 Start tag: LINE
-Text: 01111111111110
+Text: 00000000000000
 End tag: LINE
 Text: 
         
@@ -599,7 +441,7 @@ End tag: LINE
 Text: 
         
 Start tag: LINE
-Text: 11111111111111
+Text: 00000000000000
 End tag: LINE
 Text: 
         
@@ -609,17 +451,17 @@ End tag: LINE
 Text: 
         
 Start tag: LINE
-Text: 11111000011111
+Text: 00000000000000
 End tag: LINE
 Text: 
         
 Start tag: LINE
-Text: 11110000001111
+Text: 11111111111111
 End tag: LINE
 Text: 
         
 Start tag: LINE
-Text: 11100000000111
+Text: 00000000000000
 End tag: LINE
 Text: 
     
@@ -676,12 +518,12 @@ Comments:
 Text: e-->
         
 Start tag: LINE
-Text: 00111111111100
+Text: 11111111111111
 End tag: LINE
 Text: 
         
 Start tag: LINE
-Text: 01111111111110
+Text: 00000000000000
 End tag: LINE
 Text: 
         
@@ -691,7 +533,7 @@ End tag: LINE
 Text: 
         
 Start tag: LINE
-Text: 11111111111111
+Text: 00000000000000
 End tag: LINE
 Text: 
         
@@ -701,17 +543,17 @@ End tag: LINE
 Text: 
         
 Start tag: LINE
-Text: 11111000011111
+Text: 00000000000000
 End tag: LINE
 Text: 
         
 Start tag: LINE
-Text: 11110000001111
+Text: 11111111111111
 End tag: LINE
 Text: 
         
 Start tag: LINE
-Text: 11100000000111
+Text: 00000000000000
 End tag: LINE
 Text: 
     
